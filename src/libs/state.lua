@@ -7,6 +7,7 @@ function State:init(game)
 
     self.name = "BaseState"
     self.game = game
+    self.camera = nil
 
     self.entity = {
         new = function(entityClass, ...)
@@ -58,8 +59,16 @@ function State:update(dt)
 end
 
 function State:draw()
+    if self.camera then
+        self.camera:attach()
+    end
+
     for i, entity in ipairs(self._entities) do
         entity:draw(self.game.UnitSize)
+    end
+
+    if self.camera then
+        self.camera:detach()
     end
 end
 

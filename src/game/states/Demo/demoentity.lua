@@ -13,7 +13,7 @@ end
 function DemoEntity:update(dt)
     Entity.update(self, dt)
 
-    self.position.x = self.position.x + 1 * dt
+    -- self.position.x = self.position.x + 1 * dt
 end
 
 return DemoEntity

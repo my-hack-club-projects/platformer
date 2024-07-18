@@ -23,7 +23,7 @@ end
 function Entity:draw_setup(unitSize)
     -- This function translates and rotates the screen so that the entity can be drawn
     love.graphics.translate(self.position.x * unitSize, self.position.y * unitSize)
-    love.graphics.rotate(-self.rotation)
+    love.graphics.rotate(self.rotation)
 end
 
 function Entity:draw(unitSize)
