@@ -63,8 +63,8 @@ function State:draw()
     end
 end
 
-function State.__tostring()
-    return "<StateObject>"
+function State:__tostring()
+    return "<StateObject " .. self.name .. ">"
 end
 
 return State

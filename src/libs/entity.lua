@@ -45,4 +45,8 @@ function Entity:draw(unitSize)
     love.graphics.pop()
 end
 
+function Entity:__tostring()
+    return "<Entity '" .. self.name .. "' at " .. tostring(self.position) .. ">"
+end
+
 return Entity
