@@ -55,6 +55,38 @@ function Color3.fromPercentage(r, g, b)
     return Color3(r * 255, g * 255, b * 255)
 end
 
+function Color3:lerp(other, t)
+    return Color3(
+        mathf.lerp(self.r, other.r, t),
+        mathf.lerp(self.g, other.g, t),
+        mathf.lerp(self.b, other.b, t)
+    )
+end
+
+function Color3:__add(other)
+    return Color3(self.r + other.r, self.g + other.g, self.b + other.b)
+end
+
+function Color3:__sub(other)
+    return Color3(self.r - other.r, self.g - other.g, self.b - other.b)
+end
+
+function Color3:__mul(other)
+    if type(other) == "number" then
+        return Color3(self.r * other, self.g * other, self.b * other)
+    else
+        return Color3(self.r * other.r, self.g * other.g, self.b * other.b)
+    end
+end
+
+function Color3:__div(other)
+    if type(other) == "number" then
+        return Color3(self.r / other, self.g / other, self.b / other)
+    else
+        return Color3(self.r / other.r, self.g / other.g, self.b / other.b)
+    end
+end
+
 function Color3:__tostring()
     return "<Color3 (" .. self.r .. ", " .. self.g .. ", " .. self.b .. ")>"
 end

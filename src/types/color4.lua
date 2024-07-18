@@ -36,6 +36,43 @@ function Color4.fromPercentage(r, g, b, a)
     return Color4(r * 255, g * 255, b * 255, a * 255)
 end
 
+function Color4:lerp(other, t)
+    return Color4(
+        mathf.lerp(self.r, other.r, t),
+        mathf.lerp(self.g, other.g, t),
+        mathf.lerp(self.b, other.b, t),
+        mathf.lerp(self.a, other.a, t)
+    )
+end
+
+function Color4:__add(other)
+    return Color4(self.r + other.r, self.g + other.g, self.b + other.b, self.a + other.a)
+end
+
+function Color4:__sub(other)
+    return Color4(self.r - other.r, self.g - other.g, self.b - other.b, self.a - other.a)
+end
+
+function Color4:__mul(other)
+    if type(other) == "number" then
+        return Color4(self.r * other, self.g * other, self.b * other, self.a * other)
+    else
+        return Color4(self.r * other.r, self.g * other.g, self.b * other.b, self.a * other.a)
+    end
+end
+
+function Color4:__div(other)
+    if type(other) == "number" then
+        return Color4(self.r / other, self.g / other, self.b / other, self.a / other)
+    else
+        return Color4(self.r / other.r, self.g / other.g, self.b / other.b, self.a / other.a)
+    end
+end
+
+function Color4:__eq(other)
+    return self.r == other.r and self.g == other.g and self.b == other.b and self.a == other.a
+end
+
 function Color4:__tostring()
     return "<Color4 (" .. self.r .. ", " .. self.g .. ", " .. self.b .. ", " .. self.a .. ")>"
 end
