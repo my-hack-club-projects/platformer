@@ -5,10 +5,13 @@ local oo = {}
 function oo.class(...)
     local proto = oo.aug({}, ...)
     proto.__index = proto
+    proto.__call = function(self, ...)
+        return self.new(...)
+    end
 
     function proto.new(...)
         local self = setmetatable({}, proto)
-        self.super = proto
+
         if proto.init then
             self:init(...)
         end
