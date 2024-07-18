@@ -24,7 +24,16 @@ function State:init(game)
                     return entity
                 end
             end
-        end
+        end,
+
+        remove = function(entity)
+            for i, e in ipairs(self._entities) do
+                if e == entity then
+                    table.remove(self._entities, i)
+                    return
+                end
+            end
+        end,
     }
 
     self._entities = {} -- List of entities attached to this state

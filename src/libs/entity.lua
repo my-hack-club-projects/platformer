@@ -12,8 +12,8 @@ function Entity:init(name)
     self.rotation = 0
 end
 
-function Entity:add(component)
-    table.insert(self.components, component)
+function Entity:destroy()
+    self.state.entity.remove(self)
 end
 
 function Entity:update(dt)
