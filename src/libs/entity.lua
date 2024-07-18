@@ -7,8 +7,8 @@ function Entity:init(name)
     self.name = name or ""
     self.state = nil -- reverse pointer to the state that owns this entity
 
-    self.position = Vector2.new(0, 0)
-    self.size = Vector2.new(0, 0)
+    self.position = Vector2(0, 0)
+    self.size = Vector2(0, 0)
     self.rotation = 0
 end
 

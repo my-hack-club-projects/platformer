@@ -6,6 +6,13 @@ function oo.class(...)
     local proto = oo.aug({}, ...)
     proto.__index = proto
 
+    setmetatable(proto, {
+        __call = function(cls, ...)
+            return cls.new(...)
+        end
+    })
+
+
     function proto.new(...)
         local self = setmetatable({}, proto)
 

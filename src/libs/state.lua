@@ -10,8 +10,7 @@ function State:init(game)
 
     self.entity = {
         new = function(entityClass, ...)
-            print("Creating new entity")
-            local entity = entityClass.new(...)
+            local entity = entityClass(...)
 
             table.insert(self._entities, entity)
             entity.state = self

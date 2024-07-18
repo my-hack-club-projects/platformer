@@ -11,7 +11,6 @@ function DemoState:init(game)
 end
 
 function DemoState:enter(prevState)
-    print("Overwrote the function!")
     -- create a demo entity
     self.demoEntity = self.entity.new(DemoEntity, "demo entity")
 end

@@ -3,7 +3,7 @@
 function love.load()
     local GameClass = require 'game.game'
 
-    Game = GameClass.new()
+    Game = GameClass()
     Game.initial = "DemoState"
 
     -- scan game/states directory for all states
