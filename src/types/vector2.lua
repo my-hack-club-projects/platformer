@@ -46,3 +46,5 @@ end
 function Vector2:__tostring()
     return "(" .. self.x .. ", " .. self.y .. ")"
 end
+
+return Vector2
