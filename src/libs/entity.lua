@@ -3,7 +3,9 @@ local Vector2 = require 'types.Vector2'
 
 local Entity = oo.class()
 
-function Entity:init()
+function Entity:init(name)
+    self.name = name or ""
+
     self.position = Vector2(0, 0)
     self.size = Vector2(0, 0)
     self.rotation = 0
