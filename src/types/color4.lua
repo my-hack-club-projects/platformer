@@ -35,3 +35,9 @@ end
 function Color4.fromPercentage(r, g, b, a)
     return Color4(r * 255, g * 255, b * 255, a * 255)
 end
+
+function Color4:__tostring()
+    return "<Color4 (" .. self.r .. ", " .. self.g .. ", " .. self.b .. ", " .. self.a .. ")>"
+end
+
+return Color4
