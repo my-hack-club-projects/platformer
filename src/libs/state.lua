@@ -2,8 +2,11 @@ local oo = require 'libs.oo'
 
 local State = oo.class()
 
-function State:init(prevState)
-    self.prevState = prevState
+function State:init(game)
+    assert(game, "State must be initialized with a game object")
+
+    self.name = "BaseState"
+    self.game = game
 
     self.entity = {
         new = function(entityClass, ...)
@@ -23,9 +26,10 @@ function State:init(prevState)
             end
         end
     }
+
     self._entities = {} -- List of entities attached to this state
 
-    self.enter = function()
+    self.enter = function(prevState)
     end
 end
 

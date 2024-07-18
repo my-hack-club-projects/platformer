@@ -3,8 +3,23 @@ local oo = require 'libs.oo'
 local Game = oo.class()
 
 function Game:init()
+    -- states
     self.states = {}
     self.current = nil
+    self.initial = nil
+
+    -- properties
+    self.UnitSize = 32
+
+    -- other
+    self.shared = {} -- shared data between states
+end
+
+function Game:load()
+    -- runs once on love.load after all states have been loaded
+
+    assert(self.initial, "No initial state for Game")
+    self:setState(self.initial)
 end
 
 function Game:loadState(stateClass)
