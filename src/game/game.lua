@@ -80,6 +80,7 @@ function Game:setState(name)
     local prev = self.current
 
     self.current = self.states[name]
+    self.current.prevState = prev
     self.current:enter(prev)
 end
 

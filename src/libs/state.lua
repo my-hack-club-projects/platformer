@@ -7,6 +7,7 @@ function State:init(game)
 
     self.name = "BaseState"
     self.game = game
+    self.prevState = nil
     self.camera = nil
 
     self.entity = {
