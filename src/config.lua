@@ -1,3 +1,3 @@
 return {
-    UNIT_SIZE = 32,
+    UnitSize = 32,
 }

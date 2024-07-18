@@ -1,10 +1,14 @@
 -- main.lua is responsible for initializing all states and the game loop.
 
 function love.load()
+    local config = require 'config'
     local GameClass = require 'game.game'
 
     Game = GameClass()
     Game.initial = "DemoState"
+
+    -- load config
+    Game:loadConfig(config)
 
     -- scan game/states directory for all states
     local states = love.filesystem.getDirectoryItems("game/states") -- these are folders with a 'state.lua' file inside them

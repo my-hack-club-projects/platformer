@@ -26,6 +26,12 @@ function Game:init()
     self.shared = {} -- shared data between states
 end
 
+function Game:loadConfig(config)
+    for k, v in pairs(config) do
+        self[k] = v
+    end
+end
+
 function Game:load()
     -- runs once on love.load after all states have been loaded
 
