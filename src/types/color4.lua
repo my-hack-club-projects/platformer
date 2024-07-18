@@ -1,39 +1,102 @@
 local oo = require 'libs.oo'
 local mathf = require 'libs.mathf'
-local Color3 = require 'types.color3'
 
-local Color4 = oo.class(Color3)
+local Color4 = oo.class()
+
+local function colorOperation(color1, color2, operation)
+    if type(color1) == 'number' then
+        color1 = Color4(color1, color1, color1, 1)
+    end
+    if type(color2) == 'number' then
+        color2 = Color4(color2, color2, color2, 1)
+    end
+
+    local t = {}
+
+    for i = 1, mathf.max(#color1.components, #color2.components) do
+        t[i] = operation(color1.components[i] or 0, color2.components[i] or 0)
+    end
+
+    return Color4(table.unpack(t))
+end
 
 function Color4:init(r, g, b, a)
-    Color3.init(self, r, g, b)
+    self.components = {}
 
-    self.a = mathf.clamp(a or 255, 0, 255)
+    for i, v in ipairs({ r or 0, g or 0, b or 0, a or 1 }) do
+        self.components[i] = mathf.clamp(v, 0, 1)
+    end
 
+    self.r = self.components[1]
+    self.g = self.components[2]
+    self.b = self.components[3]
+    self.a = self.components[4]
+
+    self.fromRGBA = nil
     self.fromHex = nil
-    self.fromHSV = nil
-    self.fromPercentage = nil
+    self.fromHSVA = nil
+end
+
+function Color4.fromRGBA(r, g, b, a)
+    return Color4(r / 255, g / 255, b / 255, a / 255)
 end
 
 function Color4.fromHex(hex)
-    local splitToRGBA = {}
+    hex = hex:gsub('#', '')
+    return Color4.fromRGBA(
+        tonumber(hex:sub(1, 2), 16),
+        tonumber(hex:sub(3, 4), 16),
+        tonumber(hex:sub(5, 6), 16),
+        tonumber(hex:sub(7, 8) or 'FF', 16)
+    )
+end
 
-    if # hex < 8 then hex = hex .. string.rep("F", 8 - # hex) end --flesh out bad hexes
+function Color4.fromHSVA(h, s, v, a)
+    h, s, v, a = h / 360, s / 100, v / 100, a / 100
 
-    for x = 1, # hex - 1, 2 do
-        table.insert(splitToRGBA, tonumber(hex:sub(x, x + 1), 16))                --convert hexes to dec
-        if splitToRGBA[# splitToRGBA] < 0 then splitToRGBA[# splitToRGBA] = 0 end --prevents negative values
+    if s <= 0 then
+        return Color4(v, v, v, a)
     end
 
-    return Color4(table.unpack(splitToRGBA))
+    h = h * 6
+    local c = v * s
+    local x = (1 - math.abs((h % 2) - 1)) * c
+    local m, r, g, b = (v - c), 0, 0, 0
+    if h < 1 then
+        r, g, b = c, x, 0
+    elseif h < 2 then
+        r, g, b = x, c, 0
+    elseif h < 3 then
+        r, g, b = 0, c, x
+    elseif h < 4 then
+        r, g, b = 0, x, c
+    elseif h < 5 then
+        r, g, b = x, 0, c
+    else
+        r, g, b = c, 0, x
+    end
+
+    return Color4(r + m, g + m, b + m, a)
 end
 
-function Color4.fromHSV(h, s, v, a)
-    local color = Color3.fromHSV(h, s, v)
-    return Color4(color.r, color.g, color.b, a)
+function Color4:__add(other)
+    return colorOperation(self, other, function(a, b) return a + b end)
 end
 
-function Color4.fromPercentage(r, g, b, a)
-    return Color4(r * 255, g * 255, b * 255, a * 255)
+function Color4:__sub(other)
+    return colorOperation(self, other, function(a, b) return a - b end)
+end
+
+function Color4:__mul(other)
+    return colorOperation(self, other, function(a, b) return a * b end)
+end
+
+function Color4:__div(other)
+    return colorOperation(self, other, function(a, b) return a / b end)
+end
+
+function Color4:__eq(other)
+    return self.r == other.r and self.g == other.g and self.b == other.b and self.a == other.a
 end
 
 function Color4:lerp(other, t)
@@ -45,36 +108,12 @@ function Color4:lerp(other, t)
     )
 end
 
-function Color4:__add(other)
-    return Color4(self.r + other.r, self.g + other.g, self.b + other.b, self.a + other.a)
-end
-
-function Color4:__sub(other)
-    return Color4(self.r - other.r, self.g - other.g, self.b - other.b, self.a - other.a)
-end
-
-function Color4:__mul(other)
-    if type(other) == "number" then
-        return Color4(self.r * other, self.g * other, self.b * other, self.a * other)
-    else
-        return Color4(self.r * other.r, self.g * other.g, self.b * other.b, self.a * other.a)
-    end
-end
-
-function Color4:__div(other)
-    if type(other) == "number" then
-        return Color4(self.r / other, self.g / other, self.b / other, self.a / other)
-    else
-        return Color4(self.r / other.r, self.g / other.g, self.b / other.b, self.a / other.a)
-    end
-end
-
-function Color4:__eq(other)
-    return self.r == other.r and self.g == other.g and self.b == other.b and self.a == other.a
+function Color4:unpack()
+    return self.r, self.g, self.b, self.a
 end
 
 function Color4:__tostring()
-    return "<Color4 (" .. self.r .. ", " .. self.g .. ", " .. self.b .. ", " .. self.a .. ")>"
+    return string.format('<Color4 (%f, %f, %f, %f)>', self.r, self.g, self.b, self.a)
 end
 
 return Color4
