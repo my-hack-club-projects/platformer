@@ -9,19 +9,21 @@ function State:init(prevState)
         new = function(entityClass, ...)
             local entity = entityClass(...)
 
-            table.insert(self.entities, entity)
+            table.insert(self._entities, entity)
+            entity.state = self
+
             return entity
         end,
 
         find = function(name)
-            for i, entity in ipairs(self.entities) do
+            for i, entity in ipairs(self._entities) do
                 if entity.name == name then
                     return entity
                 end
             end
         end
     }
-    self.entities = {} -- List of entities attached to this state
+    self._entities = {} -- List of entities attached to this state
 
     self.enter = function()
     end
@@ -32,17 +34,17 @@ function State:exit()
         entity:destroy()
     end
 
-    self.entities = {}
+    self._entities = {}
 end
 
 function State:update(dt)
-    for i, entity in ipairs(self.entities) do
+    for i, entity in ipairs(self._entities) do
         entity:update(dt)
     end
 end
 
 function State:draw()
-    for i, entity in ipairs(self.entities) do
+    for i, entity in ipairs(self._entities) do
         entity:draw()
     end
 end
