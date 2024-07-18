@@ -23,7 +23,7 @@ function Game:load()
 end
 
 function Game:loadState(stateClass)
-    local state = stateClass(self)
+    local state = stateClass.new(self)
 
     self.states[state.name] = state
 end
@@ -36,6 +36,7 @@ function Game:setState(name)
     end
 
     local prev = self.current
+    print("Setting state")
 
     self.current = self.states[name]
     self.current:enter(prev)
@@ -60,6 +61,10 @@ function Game:draw()
     if not self.current then return end
 
     self.current:draw()
+end
+
+function Game.__tostring()
+    return "<GameObject>"
 end
 
 return Game

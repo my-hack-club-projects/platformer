@@ -1,5 +1,5 @@
 local oo = require 'libs.oo'
-local Vector2 = require 'types.Vector2'
+local Vector2 = require 'types.vector2'
 
 local Entity = oo.class()
 
@@ -7,8 +7,8 @@ function Entity:init(name)
     self.name = name or ""
     self.state = nil -- reverse pointer to the state that owns this entity
 
-    self.position = Vector2(0, 0)
-    self.size = Vector2(0, 0)
+    self.position = Vector2.new(0, 0)
+    self.size = Vector2.new(0, 0)
     self.rotation = 0
 end
 
@@ -26,11 +26,13 @@ function Entity:draw_setup(unitSize)
     love.graphics.rotate(-self.rotation)
 end
 
-function Entity:draw(dt, unitSize)
+function Entity:draw(unitSize)
+    assert(unitSize, "Unit size not provided")
+
     -- This function draws a rectangle at the entity's position.
     love.graphics.push()
 
-    self.draw_setup(unitSize)
+    self:draw_setup(unitSize)
 
     love.graphics.rectangle(
         'fill',

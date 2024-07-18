@@ -10,7 +10,8 @@ function State:init(game)
 
     self.entity = {
         new = function(entityClass, ...)
-            local entity = entityClass(...)
+            print("Creating new entity")
+            local entity = entityClass.new(...)
 
             table.insert(self._entities, entity)
             entity.state = self
@@ -37,9 +38,10 @@ function State:init(game)
     }
 
     self._entities = {} -- List of entities attached to this state
+end
 
-    self.enter = function(prevState)
-    end
+function State:enter()
+    -- To be overwritten by a subclass
 end
 
 function State:exit()
@@ -58,8 +60,12 @@ end
 
 function State:draw()
     for i, entity in ipairs(self._entities) do
-        entity:draw()
+        entity:draw(self.game.UnitSize)
     end
+end
+
+function State.__tostring()
+    return "<StateObject>"
 end
 
 return State
