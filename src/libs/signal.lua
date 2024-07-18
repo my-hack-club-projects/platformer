@@ -5,6 +5,7 @@ local Listener = oo.class()
 function Listener:init(f, scope)
     self.func = f
     self.scope = scope
+    self.signal = nil
 end
 
 function Listener:__call(...)
@@ -13,6 +14,10 @@ function Listener:__call(...)
     else
         self.func(self.scope, ...)
     end
+end
+
+function Listener:disconnect()
+    self.signal:remove(self)
 end
 
 local Signal = oo.class()
@@ -31,21 +36,23 @@ end
 
 function Signal:connect(func, scope)
     local l = Listener.new(func, scope)
+    l.signal = self
     table.insert(self.listeners, l)
     return l
 end
 
 function Signal:once(func, scope)
-    self:connect(func, scope).once = true
+    local l = self:connect(func, scope)
+    l.once = true
+    return l
 end
 
-function Signal:remove(func, scope)
-    table.remove(self.listeners, getListenerPos(self, func, scope))
-end
-
-function Signal:removeAll()
-    for i in ipairs(self.listeners) do
-        self.listeners[i] = nil
+function Signal:remove(l)
+    for i, listener in ipairs(self.listeners) do
+        if listener == l then
+            table.remove(self.listeners, i)
+            return
+        end
     end
 end
 

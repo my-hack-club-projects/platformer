@@ -1,4 +1,5 @@
 local oo = require 'libs.oo'
+local signal = require 'libs.signal'
 
 local Game = oo.class()
 
@@ -7,6 +8,16 @@ function Game:init()
     self.states = {}
     self.current = nil
     self.initial = nil
+
+    -- signals
+    self.signals = {
+        stateChange = signal.new(),
+
+        preDraw = signal.new(),
+        postDraw = signal.new(),
+        preUpdate = signal.new(),
+        postUpdate = signal.new(),
+    }
 
     -- properties
     self.UnitSize = 32
@@ -51,15 +62,23 @@ function Game:resetState()
 end
 
 function Game:update(dt)
-    if not self.current then return end
+    self.signals.preUpdate:dispatch(dt)
 
-    self.current:update(dt)
+    if self.current then
+        self.current:update(dt)
+    end
+
+    self.signals.postUpdate:dispatch(dt)
 end
 
 function Game:draw()
-    if not self.current then return end
+    self.signals.preDraw:dispatch()
 
-    self.current:draw()
+    if self.current then
+        self.current:draw()
+    end
+
+    self.signals.postDraw:dispatch()
 end
 
 function Game.__tostring()
