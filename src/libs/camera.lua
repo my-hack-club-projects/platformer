@@ -11,9 +11,17 @@ function Camera:init(game)
     self.position = Vector2(0, 0)
     self.scale = Vector2(1, 1)
     self.rotation = 0
+
+    self._attached = false
 end
 
 function Camera:attach()
+    if self._attached then
+        return
+    end
+
+    self._attached = true
+
     love.graphics.push()
     love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
     love.graphics.rotate(-self.rotation)
@@ -22,6 +30,12 @@ function Camera:attach()
 end
 
 function Camera:detach()
+    if not self._attached then
+        return
+    end
+
+    self._attached = false
+
     love.graphics.pop()
 end
 
