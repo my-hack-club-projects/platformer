@@ -67,4 +67,16 @@ function Camera:rotateTo(r)
     self.rotation = r
 end
 
+function Camera:isPointVisible(x, y)
+    local halfWidth = love.graphics.getWidth() / 2
+    local halfHeight = love.graphics.getHeight() / 2
+
+    local rotatedX = math.cos(self.rotation) * (x - self.position.x) - math.sin(self.rotation) * (y - self.position.y) +
+    self.position.x
+    local rotatedY = math.sin(self.rotation) * (x - self.position.x) + math.cos(self.rotation) * (y - self.position.y) +
+    self.position.y
+
+    return rotatedX > -halfWidth and rotatedX < halfWidth and rotatedY > -halfHeight and rotatedY < halfHeight
+end
+
 return Camera

@@ -13,6 +13,8 @@ function Game:init()
     self.signals = {
         stateChange = signal.new(),
 
+        resize = signal.new(),
+
         keypressed = signal.new(),
         keyreleased = signal.new(),
         mousepressed = signal.new(),
@@ -30,15 +32,16 @@ function Game:init()
     -- properties
     self.UnitSize = 32
 
+    self.width = 0
+    self.height = 0
+
     -- other
     self.shared = {} -- shared data between states
 
     -- handle input signals
     local function forwardSignal(name)
         return function(...)
-            if self.current then
-                self.current.signals[name]:dispatch(...)
-            end
+            self.signals[name]:dispatch(...)
         end
     end
 
@@ -49,6 +52,12 @@ function Game:init()
     love.mousemoved = forwardSignal("mousemoved")
     love.wheelmoved = forwardSignal("wheelmoved")
     love.textinput = forwardSignal("textinput")
+    love.resize = forwardSignal("resize")
+
+    -- compute dimensions
+    self:computeDimensionsUnit()
+
+    self.signals.resize:connect(self.computeDimensionsUnit, self)
 end
 
 function Game:loadConfig(config)
@@ -91,6 +100,11 @@ end
 function Game:resetState()
     self.current:exit()
     self.current:enter()
+end
+
+function Game:computeDimensionsUnit()
+    self.width = love.graphics.getWidth() / self.UnitSize
+    self.height = love.graphics.getHeight() / self.UnitSize
 end
 
 function Game:update(dt)

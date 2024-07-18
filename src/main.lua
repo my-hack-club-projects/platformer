@@ -1,11 +1,13 @@
 -- main.lua is responsible for initializing all states and the game loop.
 
+package.path = package.path .. ";game/states/?.lua"
+
 function love.load()
     local config = require 'config'
     local GameClass = require 'game.game'
 
     Game = GameClass()
-    Game.initial = "DemoState"
+    Game.initial = "PlayState"
 
     -- load config
     Game:loadConfig(config)
@@ -28,11 +30,4 @@ end
 
 function love.draw()
     Game:draw()
-end
-
-function love.conf(t)
-    t.window.title = "Game"
-    t.window.width = 800
-    t.window.height = 600
-    t.window.resizable = true
 end

@@ -1,6 +1,6 @@
 local oo = require 'libs.oo'
 local mathf = require 'libs.mathf'
-local Color3 = require 'libs.color3'
+local Color3 = require 'types.color3'
 
 local Color4 = oo.class(Color3)
 
