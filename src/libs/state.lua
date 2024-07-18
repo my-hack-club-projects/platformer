@@ -20,6 +20,11 @@ function State:init(game)
             return entity
         end,
 
+        insert = function(entity)
+            table.insert(self._entities, entity)
+            entity.state = self
+        end,
+
         find = function(name)
             for i, entity in ipairs(self._entities) do
                 if entity.name == name then
