@@ -13,6 +13,14 @@ function Game:init()
     self.signals = {
         stateChange = signal.new(),
 
+        keypressed = signal.new(),
+        keyreleased = signal.new(),
+        mousepressed = signal.new(),
+        mousereleased = signal.new(),
+        mousemoved = signal.new(),
+        wheelmoved = signal.new(),
+        textinput = signal.new(),
+
         preDraw = signal.new(),
         postDraw = signal.new(),
         preUpdate = signal.new(),
@@ -24,6 +32,23 @@ function Game:init()
 
     -- other
     self.shared = {} -- shared data between states
+
+    -- handle input signals
+    local function forwardSignal(name)
+        return function(...)
+            if self.current then
+                self.current.signals[name]:dispatch(...)
+            end
+        end
+    end
+
+    love.keypressed = forwardSignal("keypressed")
+    love.keyreleased = forwardSignal("keyreleased")
+    love.mousepressed = forwardSignal("mousepressed")
+    love.mousereleased = forwardSignal("mousereleased")
+    love.mousemoved = forwardSignal("mousemoved")
+    love.wheelmoved = forwardSignal("wheelmoved")
+    love.textinput = forwardSignal("textinput")
 end
 
 function Game:loadConfig(config)
