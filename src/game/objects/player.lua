@@ -45,6 +45,10 @@ function Player:physics(dt, entities)
     for i, entity in ipairs(entities) do
         if entity ~= self then
             if self:collides(entity) then
+                local yPenetration = math.abs(self.position.y - entity.position.y) - (self.size.y + entity.size.y) / 2
+
+                self.position.y = self.position.y + yPenetration
+
                 isGrounded = true
                 break
             end
