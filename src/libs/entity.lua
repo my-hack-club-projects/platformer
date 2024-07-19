@@ -25,13 +25,46 @@ end
 
 function Entity:update(dt, entities)
     if not self.anchored then
+        self:move(dt)
         self:physics(dt, entities)
     end
 end
 
-function Entity:physics(dt, entities)
+function Entity:move(dt)
     self.velocity.y = self.velocity.y + self.gravity * dt
     self.position = self.position + self.velocity * dt
+end
+
+function Entity:physics(dt, entities)
+    for i, entity in ipairs(entities) do
+        if entity ~= self then
+            if self:collides(entity) then
+                local penetration = Vector2(
+                    (self.size.x + entity.size.x) / 2 - math.abs(self.position.x - entity.position.x),
+                    (self.size.y + entity.size.y) / 2 - math.abs(self.position.y - entity.position.y)
+                )
+
+                if penetration.x < penetration.y then
+                    if self.position.x < entity.position.x then
+                        self.position.x = self.position.x - penetration.x
+                    else
+                        self.position.x = self.position.x + penetration.x
+                    end
+                else
+                    if self.position.y < entity.position.y then
+                        self.position.y = self.position.y - penetration.y
+                    else
+                        self.position.y = self.position.y + penetration.y
+                        self.velocity.y = 0
+                    end
+                end
+
+                return entity, penetration
+            end
+        end
+    end
+
+    return nil
 end
 
 function Entity:collides(entity)

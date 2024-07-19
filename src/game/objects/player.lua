@@ -23,6 +23,8 @@ function Player:init(game)
 end
 
 function Player:update(dt, entities)
+    if self.anchored then return end
+
     local velocityIncrease = (love.keyboard.isDown('a') and -1 or 0) + (love.keyboard.isDown('d') and 1 or 0)
     local jump = love.keyboard.isDown('w') and not self.prevJump and self.isGrounded
 
@@ -36,50 +38,26 @@ function Player:update(dt, entities)
 
     self.prevJump = jump
 
-    Entity.update(self, dt, entities)
+    self:move(dt)
+    self:physics(dt, entities)
 end
 
-function Player:physics(dt, entities)
-    local isGrounded = false
-
-    for i, entity in ipairs(entities) do
-        if entity ~= self then
-            if self:collides(entity) then
-                local penetration = Vector2(
-                    (self.size.x + entity.size.x) / 2 - math.abs(self.position.x - entity.position.x),
-                    (self.size.y + entity.size.y) / 2 - math.abs(self.position.y - entity.position.y)
-                )
-
-                if penetration.x < penetration.y then
-                    if self.position.x < entity.position.x then
-                        self.position.x = self.position.x - penetration.x
-                    else
-                        self.position.x = self.position.x + penetration.x
-                    end
-                else
-                    if self.position.y < entity.position.y then
-                        self.position.y = self.position.y - penetration.y
-                        isGrounded = true
-                    else
-                        self.position.y = self.position.y + penetration.y
-                        self.velocity.y = 0
-                    end
-                end
-
-                break
-            end
-        end
-    end
-
-    if not isGrounded then
+function Player:move(dt)
+    if not self.isGrounded then
         self.velocity.y = self.velocity.y + self.gravity * dt
     elseif self.velocity.y > 0 then
         self.velocity.y = 0
     end
 
     self.position = self.position + self.velocity * dt
+end
 
-    self.isGrounded = isGrounded
+function Player:physics(dt, entities)
+    local entity, penetration = Entity.physics(self, dt, entities)
+
+    self.isGrounded = entity and penetration
+        and (penetration.x > penetration.y)
+        and self.position.y < entity.position.y
 end
 
 return Player
