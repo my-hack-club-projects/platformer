@@ -18,7 +18,9 @@ function Player:init(game)
     self.sprintSpeed = 15
     self.acceleration = 10
 
-    self.jumpForce = 10
+    self.jumpForce = 20
+    self.jumpMinStamina = 5
+    self.jumpStaminaCost = 4
     self.prevJump = false
     self.isGrounded = false
 
@@ -37,7 +39,8 @@ function Player:update(dt, entities)
     if self.anchored then return end
 
     local velocityIncrease = (love.keyboard.isDown('a') and -1 or 0) + (love.keyboard.isDown('d') and 1 or 0)
-    local jump = love.keyboard.isDown('w') and not self.prevJump and self.isGrounded
+    local jump = love.keyboard.isDown('w') and not self.prevJump and self.isGrounded and
+        self.stamina >= self.jumpMinStamina
 
     -- sprint
     if love.keyboard.isDown('lshift') then
@@ -69,8 +72,9 @@ function Player:update(dt, entities)
     self.velocity.x = mathf.approach(self.velocity.x, velocityIncrease * speed, speed * dt * self.acceleration)
 
     -- jump
-    if jump then
-        self.velocity.y = -self.jumpForce
+    if jump and not self.prevJump then
+        self.velocity.y = -self.jumpForce * self.stamina / self.maxStamina
+        self.stamina = math.max(0, self.stamina - self.jumpStaminaCost)
     end
 
     self.prevJump = jump
