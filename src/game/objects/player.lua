@@ -84,8 +84,6 @@ function Player:update(dt, entities)
         self.stamina = 0
     end
 
-    print("Stamina: " .. self.stamina)
-
     -- walk
     if self.isDashing then
         if love.timer.getTime() - self.startedDashing >= self.dashDuration then
@@ -102,7 +100,6 @@ function Player:update(dt, entities)
     end
 
     -- jump
-    print(self.jumpCounter)
     if jump and not self.prevJump then
         self.jumpCounter = self.jumpCounter + 1
         self.lastJumped = love.timer.getTime()

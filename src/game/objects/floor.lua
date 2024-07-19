@@ -7,6 +7,7 @@ local Floor = oo.class()
 function Floor:init(game)
     self.game = game
     self.segments = {}
+    self.collider = nil
 
     self.segmentSize = 1
 end
@@ -21,8 +22,20 @@ function Floor:fillWidth(width)
         entity.size.y = 1
         entity.color = Color4(math.random(), 0.5, 0.5, 1) -- color for debugging the segments
         entity.anchored = true
+        entity.collide = false
         table.insert(self.segments, entity)
     end
+
+    self.collider = Entity()
+    self.collider.position.x = 0
+    self.collider.position.y = 0
+    self.collider.size.x = width
+    self.collider.size.y = 1
+    self.collider.anchored = true
+    self.collider.collide = true
+    self.collider.color = Color4(0, 0, 0, 0)
+
+    table.insert(self.segments, self.collider)
 end
 
 function Floor:draw()
