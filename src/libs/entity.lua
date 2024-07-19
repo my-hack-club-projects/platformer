@@ -16,6 +16,7 @@ function Entity:init(name)
 
     self.anchored = false
     self.gravity = 0
+    self.mass = 1
     self.velocity = Vector2(0, 0)
 end
 
@@ -26,13 +27,17 @@ end
 function Entity:update(dt, entities)
     if not self.anchored then
         self:move(dt)
+        self:applyGravity(dt)
         self:physics(dt, entities)
     end
 end
 
 function Entity:move(dt)
-    self.velocity.y = self.velocity.y + self.gravity * dt
     self.position = self.position + self.velocity * dt
+end
+
+function Entity:applyGravity(dt)
+    self.velocity.y = self.velocity.y + self.gravity * self.mass * dt
 end
 
 function Entity:physics(dt, entities)

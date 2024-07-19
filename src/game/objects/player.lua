@@ -44,7 +44,7 @@ end
 
 function Player:move(dt)
     if not self.isGrounded then
-        self.velocity.y = self.velocity.y + self.gravity * dt
+        self:applyGravity(dt)
     elseif self.velocity.y > 0 then
         self.velocity.y = 0
     end
