@@ -15,11 +15,22 @@ function Player:init(game)
     self.color = Color4(1, 1, 1, 1)
 
     self.speed = 5 -- units per second
+    self.sprintSpeed = 15
     self.acceleration = 10
 
     self.jumpForce = 10
     self.prevJump = false
     self.isGrounded = false
+
+    self.isSprinting = false
+    self.prevSprinting = false
+    self.isSprintKeyHeld = false
+    self.prevSprintKeyHeld = false
+    self.maxStamina = 10
+    self.stamina = self.maxStamina
+    self.staminaRegen = 1
+    self.staminaDepletion = 2
+    self.sprintMinStamina = 2
 end
 
 function Player:update(dt, entities)
@@ -28,8 +39,34 @@ function Player:update(dt, entities)
     local velocityIncrease = (love.keyboard.isDown('a') and -1 or 0) + (love.keyboard.isDown('d') and 1 or 0)
     local jump = love.keyboard.isDown('w') and not self.prevJump and self.isGrounded
 
+    -- sprint
+    if love.keyboard.isDown('lshift') then
+        self.isSprintKeyHeld = true
+
+        if not self.prevSprintKeyHeld then
+            self.isSprinting = self.stamina > self.sprintMinStamina
+        end
+    else
+        self.isSprinting = false
+        self.isSprintKeyHeld = false
+    end
+
+    self.stamina = mathf.clamp(
+        self.stamina +
+        ((self.isSprinting and math.abs(velocityIncrease) > 0) and -self.staminaDepletion or self.staminaRegen) * dt,
+        0,
+        self.maxStamina)
+
+    if self.stamina <= 0 then
+        self.isSprinting = false
+        self.stamina = 0
+    end
+
+    print("Stamina: " .. self.stamina)
+
     -- walk
-    self.velocity.x = mathf.approach(self.velocity.x, velocityIncrease * self.speed, self.speed * dt * self.acceleration)
+    local speed = self.isSprinting and self.sprintSpeed or self.speed
+    self.velocity.x = mathf.approach(self.velocity.x, velocityIncrease * speed, speed * dt * self.acceleration)
 
     -- jump
     if jump then
@@ -37,6 +74,8 @@ function Player:update(dt, entities)
     end
 
     self.prevJump = jump
+    self.prevSprinting = self.isSprinting
+    self.prevSprintKeyHeld = self.isSprintKeyHeld
 
     self:move(dt)
     self:physics(dt, entities)
