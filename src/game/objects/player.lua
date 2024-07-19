@@ -45,15 +45,25 @@ function Player:physics(dt, entities)
     for i, entity in ipairs(entities) do
         if entity ~= self then
             if self:collides(entity) then
-                local yPenetration = math.abs(self.position.y - entity.position.y) - (self.size.y + entity.size.y) / 2
-                local direction = mathf.sign(entity.position.y - self.position.y)
+                local penetration = Vector2(
+                    (self.size.x + entity.size.x) / 2 - math.abs(self.position.x - entity.position.x),
+                    (self.size.y + entity.size.y) / 2 - math.abs(self.position.y - entity.position.y)
+                )
 
-                self.position.y = self.position.y + yPenetration * direction
-
-                if direction > 0 then
-                    isGrounded = true
+                if penetration.x < penetration.y then
+                    if self.position.x < entity.position.x then
+                        self.position.x = self.position.x - penetration.x
+                    else
+                        self.position.x = self.position.x + penetration.x
+                    end
                 else
-                    self.velocity.y = 0
+                    if self.position.y < entity.position.y then
+                        self.position.y = self.position.y - penetration.y
+                        isGrounded = true
+                    else
+                        self.position.y = self.position.y + penetration.y
+                        self.velocity.y = 0
+                    end
                 end
 
                 break
