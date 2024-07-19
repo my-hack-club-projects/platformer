@@ -15,6 +15,8 @@ function Entity:init(name)
     self.color = Color4(1, 1, 1, 1)
 
     self.anchored = false
+    self.collide = true
+
     self.gravity = 0
     self.mass = 1
     self.velocity = Vector2(0, 0)
@@ -42,7 +44,7 @@ end
 
 function Entity:physics(dt, entities)
     for i, entity in ipairs(entities) do
-        if entity ~= self then
+        if entity ~= self and entity.collide then
             if self:collides(entity) then
                 local penetration = Vector2(
                     (self.size.x + entity.size.x) / 2 - math.abs(self.position.x - entity.position.x),
