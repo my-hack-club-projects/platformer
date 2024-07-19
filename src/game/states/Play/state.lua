@@ -35,6 +35,12 @@ function PlayState:enter()
     self.test.anchored = true
 end
 
+function PlayState:update(dt)
+    State.update(self, dt)
+
+    self.camera.position.y = -self.camera:getRealSize().y / 2
+end
+
 function PlayState:draw()
     State.draw(self)
 end

@@ -12,9 +12,20 @@ function Camera:init(game)
     self.scale = Vector2(1, 1)
     self.rotation = 0
 
-    self.horizontalFov = 1200
+    self.horizontalFov = 35 -- How many units wide the camera can see
 
     self._attached = false
+end
+
+function Camera:getFovScale()
+    return love.graphics.getWidth() / self.horizontalFov / self.game.UnitSize
+end
+
+function Camera:getRealSize()
+    -- size of the camera in units
+
+    return Vector2(love.graphics.getWidth() / self.game.UnitSize / self:getFovScale(),
+        love.graphics.getHeight() / self.game.UnitSize / self:getFovScale()) / self.scale
 end
 
 function Camera:attach()
@@ -27,7 +38,7 @@ function Camera:attach()
     love.graphics.push()
     love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
     love.graphics.rotate(-self.rotation)
-    love.graphics.scale(love.graphics.getWidth() / self.horizontalFov, love.graphics.getWidth() / self.horizontalFov) -- this is wrong, invert it
+    love.graphics.scale(self:getFovScale(), self:getFovScale())
 
     love.graphics.scale(self.scale.x, self.scale.y)
     love.graphics.translate(-self.position.x * self.game.UnitSize, -self.position.y * self.game.UnitSize)
