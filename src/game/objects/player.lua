@@ -9,7 +9,7 @@ local Player = oo.class(Entity)
 function Player:init(game)
     Entity.init(self, game)
 
-    self.position = Vector2(0, -10)
+    self.position = Vector2(0, -1)
     self.size.x = 1
     self.size.y = 1
     self.color = Color4(1, 1, 1, 1)
@@ -46,10 +46,16 @@ function Player:physics(dt, entities)
         if entity ~= self then
             if self:collides(entity) then
                 local yPenetration = math.abs(self.position.y - entity.position.y) - (self.size.y + entity.size.y) / 2
+                local direction = mathf.sign(entity.position.y - self.position.y)
 
-                self.position.y = self.position.y + yPenetration
+                self.position.y = self.position.y + yPenetration * direction
 
-                isGrounded = true
+                if direction > 0 then
+                    isGrounded = true
+                else
+                    self.velocity.y = 0
+                end
+
                 break
             end
         end
