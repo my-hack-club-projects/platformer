@@ -2,7 +2,7 @@ local oo = require 'libs.oo'
 local State = require 'libs.state'
 local Camera = require 'libs.camera'
 local Floor = require 'game.objects.floor'
-local Entity = require 'libs.entity'
+local Player = require 'game.objects.player'
 
 local PlayState = oo.class(State)
 
@@ -19,14 +19,17 @@ function PlayState:enter()
 
     self.floor = Floor(self.game)
     self.floor:fillWidth(self.width)
+
+    for _, segment in ipairs(self.floor.segments) do
+        self.entity.insert(segment)
+    end
+
+    self.player = self.entity.new(Player)
+    self.player.gravity = self.game.Gravity
 end
 
 function PlayState:draw()
     State.draw(self)
-
-    self.camera:attach()
-    self.floor:draw()
-    self.camera:detach()
 end
 
 return PlayState

@@ -60,7 +60,7 @@ end
 
 function State:update(dt)
     for i, entity in ipairs(self._entities) do
-        entity:update(dt)
+        entity:update(dt, self._entities)
     end
 end
 

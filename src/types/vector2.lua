@@ -2,9 +2,15 @@ local oo = require 'libs.oo'
 
 local Vector2 = oo.class()
 
-function Vector2:init(x, y)
+function Vector2:init(x, y, _skipUnit)
     self.x = x or 0
     self.y = y or 0
+
+    self.magnitude = math.sqrt(self.x * self.x + self.y * self.y)
+
+    if not _skipUnit then
+        self.unit = Vector2(self.x / self.magnitude, self.y / self.magnitude, true)
+    end
 end
 
 function Vector2:__add(other)

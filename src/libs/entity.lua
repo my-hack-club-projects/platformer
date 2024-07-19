@@ -13,14 +13,33 @@ function Entity:init(name)
     self.rotation = 0
 
     self.color = Color4(1, 1, 1, 1)
+
+    self.anchored = false
+    self.gravity = 0
+    self.velocity = Vector2(0, 0)
 end
 
 function Entity:destroy()
     self.state.entity.remove(self)
 end
 
-function Entity:update(dt)
-    -- This function is to be overridden by classes that inherit from Entity.
+function Entity:update(dt, entities)
+    if not self.anchored then
+        self:physics(dt, entities)
+    end
+end
+
+function Entity:physics(dt, entities)
+    self.velocity.y = self.velocity.y + self.gravity * dt
+    self.position = self.position + self.velocity * dt
+end
+
+function Entity:collides(entity)
+    -- aabb
+    return self.position.x - self.size.x / 2 < entity.position.x + entity.size.x / 2 and
+        self.position.x + self.size.x / 2 > entity.position.x - entity.size.x / 2 and
+        self.position.y - self.size.y / 2 < entity.position.y + entity.size.y / 2 and
+        self.position.y + self.size.y / 2 > entity.position.y - entity.size.y / 2
 end
 
 function Entity:draw_setup(unitSize)

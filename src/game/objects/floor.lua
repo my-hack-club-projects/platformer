@@ -20,6 +20,7 @@ function Floor:fillWidth(width)
         entity.size.x = self.segmentSize
         entity.size.y = 1
         entity.color = Color4(math.random(), 0.5, 0.5, 1) -- color for debugging the segments
+        entity.anchored = true
         table.insert(self.segments, entity)
     end
 end
