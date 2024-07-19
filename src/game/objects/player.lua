@@ -17,6 +17,7 @@ function Player:init(game)
     self.speed = 5 -- units per second
     self.sprintSpeed = 15
     self.acceleration = 10
+    self.midarAccelerationMultiplier = 0.2
 
     self.jumpForce = 20
     self.jumpMinStamina = 5
@@ -69,7 +70,8 @@ function Player:update(dt, entities)
 
     -- walk
     local speed = self.isSprinting and self.sprintSpeed or self.speed
-    self.velocity.x = mathf.approach(self.velocity.x, velocityIncrease * speed, speed * dt * self.acceleration)
+    self.velocity.x = mathf.approach(self.velocity.x, velocityIncrease * speed,
+        speed * dt * (self.isGrounded and self.acceleration or self.acceleration * self.midarAccelerationMultiplier))
 
     -- jump
     if jump and not self.prevJump then
