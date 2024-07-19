@@ -1,4 +1,5 @@
 local oo = require 'libs.oo'
+local mathf = require 'libs.mathf'
 local Vector2 = require 'types.vector2'
 local State = require 'libs.state'
 local Camera = require 'libs.camera'
@@ -35,10 +36,30 @@ function PlayState:enter()
     self.test.anchored = true
 end
 
+function PlayState:updateCamera(dt)
+    local cameraRealSize = self.camera:getRealSize()
+    local cameraClamp = {
+        left = -self.width / 2 + cameraRealSize.x / 2,
+        right = self.width / 2 - cameraRealSize.x / 2,
+        top = -math.huge,
+        bottom = -cameraRealSize.y / 2
+    }
+
+    local cameraPosition = self.camera.position -- table reference, won't need to set it back
+    local playerPosition = self.player.position
+    local distance = (cameraPosition + Vector2(0, cameraRealSize.y / 2) - playerPosition).magnitude
+
+    cameraPosition.x = mathf.approach(cameraPosition.x, playerPosition.x, distance * dt)
+    cameraPosition.y = mathf.approach(cameraPosition.y, playerPosition.y, distance * dt)
+
+    cameraPosition.x = mathf.clamp(cameraPosition.x, cameraClamp.left, cameraClamp.right)
+    cameraPosition.y = mathf.clamp(cameraPosition.y, cameraClamp.top, cameraClamp.bottom)
+end
+
 function PlayState:update(dt)
     State.update(self, dt)
 
-    self.camera.position.y = -self.camera:getRealSize().y / 2
+    self:updateCamera(dt)
 end
 
 function PlayState:draw()
