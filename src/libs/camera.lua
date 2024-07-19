@@ -12,6 +12,8 @@ function Camera:init(game)
     self.scale = Vector2(1, 1)
     self.rotation = 0
 
+    self.horizontalFov = 1200
+
     self._attached = false
 end
 
@@ -25,6 +27,8 @@ function Camera:attach()
     love.graphics.push()
     love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
     love.graphics.rotate(-self.rotation)
+    love.graphics.scale(love.graphics.getWidth() / self.horizontalFov, love.graphics.getWidth() / self.horizontalFov) -- this is wrong, invert it
+
     love.graphics.scale(self.scale.x, self.scale.y)
     love.graphics.translate(-self.position.x * self.game.UnitSize, -self.position.y * self.game.UnitSize)
 end
@@ -72,9 +76,9 @@ function Camera:isPointVisible(x, y)
     local halfHeight = love.graphics.getHeight() / 2
 
     local rotatedX = math.cos(self.rotation) * (x - self.position.x) - math.sin(self.rotation) * (y - self.position.y) +
-    self.position.x
+        self.position.x
     local rotatedY = math.sin(self.rotation) * (x - self.position.x) + math.cos(self.rotation) * (y - self.position.y) +
-    self.position.y
+        self.position.y
 
     return rotatedX > -halfWidth and rotatedX < halfWidth and rotatedY > -halfHeight and rotatedY < halfHeight
 end
