@@ -23,24 +23,37 @@ function Player:init(game)
     self.jumpMinStamina = 5
     self.jumpStaminaCost = 4
     self.prevJump = false
+    self.jumpCounter = 0
+    self.lastJumped = 0
+    self.jumpDebounce = 0.2
+    self.maxJumpsBeforeGround = 2
     self.isGrounded = false
+    self.prevGrounded = false
 
     self.isSprinting = false
     self.prevSprinting = false
     self.isSprintKeyHeld = false
     self.prevSprintKeyHeld = false
-    self.maxStamina = 10
+
+    self.maxStamina = 100
     self.stamina = self.maxStamina
-    self.staminaRegen = 1
+    self.staminaRegen = 10
     self.staminaDepletion = 2
     self.sprintMinStamina = 2
+
+    self.isDashing = false
+    self.startedDashing = 0
+    self.dashMinStamina = 2
+    self.dashSpeed = 40
+    self.dashDuration = 0.2
 end
 
 function Player:update(dt, entities)
     if self.anchored then return end
 
     local velocityIncrease = (love.keyboard.isDown('a') and -1 or 0) + (love.keyboard.isDown('d') and 1 or 0)
-    local jump = love.keyboard.isDown('w') and not self.prevJump and self.isGrounded and
+    local jump = love.keyboard.isDown('w') and not self.prevJump and self.jumpCounter < self.maxJumpsBeforeGround and
+        love.timer.getTime() - self.lastJumped >= self.jumpDebounce and
         self.stamina >= self.jumpMinStamina
 
     -- sprint
@@ -48,7 +61,12 @@ function Player:update(dt, entities)
         self.isSprintKeyHeld = true
 
         if not self.prevSprintKeyHeld then
-            self.isSprinting = self.stamina > self.sprintMinStamina
+            if self.isGrounded then
+                self.isSprinting = self.stamina > self.sprintMinStamina
+            else
+                self.isDashing = self.stamina > self.dashMinStamina
+                self.startedDashing = love.timer.getTime()
+            end
         end
     else
         self.isSprinting = false
@@ -69,17 +87,36 @@ function Player:update(dt, entities)
     print("Stamina: " .. self.stamina)
 
     -- walk
-    local speed = self.isSprinting and self.sprintSpeed or self.speed
-    self.velocity.x = mathf.approach(self.velocity.x, velocityIncrease * speed,
-        speed * dt * (self.isGrounded and self.acceleration or self.acceleration * self.midarAccelerationMultiplier))
+    if self.isDashing then
+        if love.timer.getTime() - self.startedDashing >= self.dashDuration then
+            self.velocity = Vector2(self.isSprinting and self.sprintSpeed or self.speed, self.velocity.y)
+            self.isDashing = false
+        else
+            local speed = self.dashSpeed
+            self.velocity = Vector2(velocityIncrease * speed, self.velocity.y)
+        end
+    else
+        local speed = self.isSprinting and self.sprintSpeed or self.speed
+        self.velocity.x = mathf.approach(self.velocity.x, velocityIncrease * speed,
+            speed * dt * (self.isGrounded and self.acceleration or self.acceleration * self.midarAccelerationMultiplier))
+    end
 
     -- jump
+    print(self.jumpCounter)
     if jump and not self.prevJump then
+        self.jumpCounter = self.jumpCounter + 1
+        self.lastJumped = love.timer.getTime()
+
         self.velocity.y = -self.jumpForce * self.stamina / self.maxStamina
         self.stamina = math.max(0, self.stamina - self.jumpStaminaCost)
     end
 
+    if self.isGrounded and love.timer.getTime() - self.lastJumped >= self.jumpDebounce then
+        self.jumpCounter = 0
+    end
+
     self.prevJump = jump
+    self.prevGrounded = self.isGrounded
     self.prevSprinting = self.isSprinting
     self.prevSprintKeyHeld = self.isSprintKeyHeld
 
