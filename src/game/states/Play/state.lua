@@ -64,7 +64,7 @@ function PlayState:updateCamera(dt)
 
     local cameraPosition = self.camera.position -- table reference, won't need to set it back
     local playerPosition = self.player.position
-    local distance = (cameraPosition + Vector2(0, cameraRealSize.y / 2) - playerPosition).magnitude
+    local distance = ((cameraPosition + Vector2(0, cameraRealSize.y / 2) - playerPosition).magnitude / 2) ^ 2
 
     cameraPosition.x = mathf.approach(cameraPosition.x, playerPosition.x, distance * dt)
     cameraPosition.y = mathf.approach(cameraPosition.y, playerPosition.y, distance * dt)
