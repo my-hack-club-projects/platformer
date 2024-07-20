@@ -1,5 +1,6 @@
 local oo = require 'libs.oo'
 local mathf = require 'libs.mathf'
+local moonshine = require 'libs.moonshine'
 local Vector2 = require 'types.vector2'
 local State = require 'libs.state'
 local Camera = require 'libs.camera'
@@ -18,6 +19,17 @@ function PlayState:init(game)
 
     self.width = 50
     self.height = 500
+
+    -- shaders
+    self.effect = moonshine(moonshine.effects.filmgrain).chain(moonshine.effects.crt)
+
+    self.effect.parameters = {
+        crt = { feather = 0.5, distortionFactor = { 1.1, 1.1 } },
+    }
+
+    self.game.signals.resize:connect(function(width, height)
+        self.effect.resize(width, height)
+    end)
 end
 
 function PlayState:enter()
@@ -108,7 +120,9 @@ function PlayState:update(dt)
 end
 
 function PlayState:draw()
-    State.draw(self)
+    self.effect(function()
+        State.draw(self)
+    end)
 end
 
 return PlayState
