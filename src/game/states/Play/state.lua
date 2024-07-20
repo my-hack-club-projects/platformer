@@ -27,24 +27,30 @@ function PlayState:enter()
     self.floor:fillWidth(self.width)
 
     for _, segment in ipairs(self.floor.segments) do
+        segment.color = self.game.palette.colors.accent
         self.entity.insert(segment)
     end
 
     self.player = self.entity.new(Player)
     self.player.gravity = self.game.Gravity
+    self.player.color = self.game.palette.colors.secondary
 
     self.map = Map(self.game)
     self.map:generate()
 
     for _, pad in ipairs(self.map.pads) do
+        pad.color = self.game.palette.colors.tiertary
         self.entity.insert(pad)
     end
 
     self.walls = Walls(self.width, self.height)
 
     for _, wall in ipairs(self.walls.walls) do
+        wall.color = self.game.palette.colors.tiertary
         self.entity.insert(wall)
     end
+
+    love.graphics.setBackgroundColor(self.game.palette.colors.primary:unpack())
 end
 
 function PlayState:updateCamera(dt)
