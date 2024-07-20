@@ -39,7 +39,7 @@ function PlayState:enter()
     self.floor:fillWidth(self.width)
 
     for _, segment in ipairs(self.floor.segments) do
-        segment.color = self.game.palette.colors.accent
+        segment.color = self.game.palette.colors.tiertary
         self.entity.insert(segment)
     end
 
@@ -51,14 +51,14 @@ function PlayState:enter()
     self.map:generate()
 
     for _, pad in ipairs(self.map.pads) do
-        pad.color = self.game.palette.colors.tiertary
+        pad.color = self.game.palette.colors.secondary
         self.entity.insert(pad)
     end
 
     self.walls = Walls(self.width, self.height)
 
     for _, wall in ipairs(self.walls.walls) do
-        wall.color = self.game.palette.colors.tiertary
+        wall.color = self.game.palette.colors.secondary
         self.entity.insert(wall)
     end
 

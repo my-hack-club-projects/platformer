@@ -110,7 +110,8 @@ function Player:update(dt, entities)
     -- walk
     if self.isDashing then
         if love.timer.getTime() - self.startedDashing >= self.dashDuration then
-            self.velocity = Vector2(self.isSprinting and self.sprintSpeed or self.speed, self.velocity.y)
+            self.velocity = Vector2(velocityIncrease * self.speed,
+                self.velocity.y)
             self.isDashing = false
         else
             local speed = self.dashSpeed
