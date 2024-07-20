@@ -27,7 +27,9 @@ function Map:generate()
         local xOffset = math.random(self.padXOffset[1], self.padXOffset[2]) * (math.random(0, 1) == 0 and -1 or 1)
 
         if prevPadPosition.x + xOffset < -self.width / 2 or prevPadPosition.x + xOffset > self.width / 2 then
-            xOffset = -xOffset
+            if math.abs(prevPadPosition.x) < math.abs(prevPadPosition.x + xOffset) then
+                xOffset = -xOffset
+            end
         end
 
         pad.position = Vector2(
