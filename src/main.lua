@@ -1,6 +1,7 @@
 -- main.lua is responsible for initializing all states and the game loop.
 
 package.path = package.path .. ";game/states/?.lua"
+math.randomseed(os.time())
 
 function love.load()
     local config = require 'config'
