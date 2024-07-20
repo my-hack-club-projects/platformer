@@ -21,10 +21,10 @@ function PlayState:init(game)
     self.height = 500
 
     -- shaders
-    self.effect = moonshine(moonshine.effects.filmgrain).chain(moonshine.effects.crt)
+    self.effect = moonshine(moonshine.effects.crt)
 
     self.effect.parameters = {
-        crt = { feather = 0.5, distortionFactor = { 1.1, 1.1 } },
+        crt = { feather = 0.3, distortionFactor = { 1.1, 1.1 } },
     }
 
     self.game.signals.resize:connect(function(width, height)
