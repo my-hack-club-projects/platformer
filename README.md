@@ -2,6 +2,8 @@
 
 ## a platformer game written in Lua using the Love2D framework.
 
+- note: all sounds are taken from [pixabay.com](https://pixabay.com/). this is not a commercial project.
+
 ## installation
 
 installation is very simple, follow these steps:
