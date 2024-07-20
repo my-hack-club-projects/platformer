@@ -1,5 +1,6 @@
 local oo = require 'libs.oo'
 local signal = require 'libs.signal'
+local Palette = require 'libs.palette'
 
 local Game = oo.class()
 
@@ -34,6 +35,8 @@ function Game:init()
 
     self.width = 0
     self.height = 0
+
+    self.palette = Palette()
 
     -- other
     self.shared = {} -- shared data between states
