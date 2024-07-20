@@ -38,7 +38,7 @@ function Color4:init(r, g, b, a)
 end
 
 function Color4.fromRGBA(r, g, b, a)
-    return Color4(r / 255, g / 255, b / 255, a / 255)
+    return Color4(r / 255, g / 255, b / 255, (a or 255) / 255)
 end
 
 function Color4.fromHex(hex)
