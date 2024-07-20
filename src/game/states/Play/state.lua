@@ -7,6 +7,7 @@ local Floor = require 'game.objects.floor'
 local Player = require 'game.objects.player'
 local Entity = require 'libs.entity'
 local Map = require 'game.states.Play.classes.map'
+local Walls = require 'game.objects.walls'
 
 local PlayState = oo.class(State)
 
@@ -15,7 +16,8 @@ function PlayState:init(game)
 
     self.name = "PlayState"
 
-    self.width = 100
+    self.width = 50
+    self.height = 500
 end
 
 function PlayState:enter()
@@ -36,6 +38,12 @@ function PlayState:enter()
 
     for _, pad in ipairs(self.map.pads) do
         self.entity.insert(pad)
+    end
+
+    self.walls = Walls(self.width, self.height)
+
+    for _, wall in ipairs(self.walls.walls) do
+        self.entity.insert(wall)
     end
 end
 
