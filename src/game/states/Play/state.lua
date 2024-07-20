@@ -64,6 +64,9 @@ function PlayState:enter()
             self.game.sound:play('dash')
         end)
     }
+
+    self.fallingSound = self.game.sound:play('falling')
+    self.fallingSound:setLooping(true)
 end
 
 function PlayState:updateCamera(dt)
@@ -90,6 +93,12 @@ function PlayState:update(dt)
     State.update(self, dt)
 
     self:updateCamera(dt)
+
+    if self.player.velocity.y > 0 then
+        self.fallingSound:setVolume(mathf.clamp(math.abs(self.player.velocity.y) / 25, 0, 1))
+    else
+        self.fallingSound:setVolume(0)
+    end
 end
 
 function PlayState:draw()
