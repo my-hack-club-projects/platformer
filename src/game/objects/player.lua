@@ -58,6 +58,12 @@ function Player:init(game)
     self.dashSpeed = 40
     self.dashDuration = 0.2
 
+    self.trailEnabled = false
+    self.trailPositions = {}
+    self.trailMaxSize = 20
+    self.trailCreateInterval = 0.01
+    self.lastTrailCreated = 0
+
     self.signals = {
         landed = Signal(),
         jumped = Signal(),
@@ -145,6 +151,17 @@ function Player:update(dt, entities)
         self.signals.landed:dispatch(self.velocity.y)
     end
 
+    -- trail
+    self.trailEnabled = self.isDashing
+
+    if self.trailEnabled and love.timer.getTime() - self.lastTrailCreated >= self.trailCreateInterval then
+        table.insert(self.trailPositions, { position = self.position, created = love.timer.getTime() })
+        if #self.trailPositions > self.trailMaxSize then
+            table.remove(self.trailPositions, 1)
+        end
+        self.lastTrailCreated = love.timer.getTime()
+    end
+
     self.prevJump = jump
     self.prevGrounded = self.isGrounded
     self.prevSprinting = self.isSprinting
@@ -174,6 +191,26 @@ function Player:physics(dt, entities)
     self.isGrounded = entity and penetration
         and (penetration.x > penetration.y)
         and self.position.y < entity.position.y
+end
+
+function Player:draw(unitSize)
+    for i, data in ipairs(self.trailPositions) do
+        local pos = data.position
+        local created = data.created
+        local maxTime = self.trailMaxSize * self.trailCreateInterval
+        local time = love.timer.getTime() - created
+        local alpha = 1 - time / maxTime
+
+        local r, g, b, _ = self.color:unpack()
+        love.graphics.setColor(r, g, b, alpha)
+
+        local realX, realY = pos.x * unitSize, pos.y * unitSize
+        local realSize = self.size * unitSize
+
+        love.graphics.rectangle('fill', realX - realSize.x / 2, realY - realSize.y / 2, realSize.x, realSize.y)
+    end
+
+    Entity.draw(self, unitSize)
 end
 
 return Player
