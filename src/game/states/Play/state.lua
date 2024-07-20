@@ -78,8 +78,8 @@ function PlayState:enter()
             table.insert(
                 self.screenShake,
                 {
-                    duration = 0.4,
-                    magnitude = math.min(velocity / 15, 1)
+                    duration = math.min(velocity / 25, 1.2),
+                    magnitude = math.min(velocity / 50, 100)
                 }
             )
         end),
@@ -93,7 +93,7 @@ function PlayState:enter()
                 self.screenShake,
                 {
                     duration = self.player.dashDuration,
-                    magnitude = 60
+                    magnitude = 100
                 }
             )
         end)
