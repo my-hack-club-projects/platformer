@@ -81,7 +81,7 @@ function Player:update(dt, entities)
             if self.isGrounded then
                 self.isSprinting = self.stamina > self.sprintMinStamina
             else
-                self.isDashing = self.stamina > self.dashMinStamina and self.canDash
+                self.isDashing = self.stamina > self.dashMinStamina and self.canDash and math.abs(velocityIncrease) > 0
                 self.canDash = false
                 self.startedDashing = love.timer.getTime()
 

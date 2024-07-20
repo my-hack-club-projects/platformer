@@ -61,7 +61,10 @@ function PlayState:enter()
             self.game.sound:play('land', velocity / 25)
         end),
         self.player.signals.dashed:connect(function()
-            self.game.sound:play('dash')
+            local source = self.game.sound:play('dash', 0.4)
+            -- playback speed
+            local originalLength = source:getDuration()
+            source:setPitch(originalLength / self.player.dashDuration / 4)
         end)
     }
 
