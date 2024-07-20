@@ -54,6 +54,7 @@ function Player:init(game)
     self.isDashing = false
     self.canDash = false
     self.startedDashing = 0
+    self.dashDirection = 0
     self.dashMinStamina = 2
     self.dashSpeed = 40
     self.dashDuration = 0.2
@@ -92,6 +93,8 @@ function Player:update(dt, entities)
                 self.startedDashing = love.timer.getTime()
 
                 if self.isDashing then
+                    self.dashDirection = velocityIncrease
+
                     self.stamina = mathf.clamp(self.stamina - self.dashMinStamina, 0, self.maxStamina)
                     self.signals.dashed:dispatch()
                 end
@@ -121,7 +124,7 @@ function Player:update(dt, entities)
             self.isDashing = false
         else
             local speed = self.dashSpeed
-            self.velocity = Vector2(velocityIncrease * speed, self.velocity.y)
+            self.velocity = Vector2(self.dashDirection * speed, self.velocity.y)
         end
     else
         -- local speed = self.isSprinting and self.sprintSpeed or self.speed

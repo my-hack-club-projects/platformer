@@ -27,6 +27,9 @@ function PlayState:init(game)
         crt = { feather = 0.3, distortionFactor = { 1.1, 1.1 } },
     }
 
+    self.screenShakeMagnitude = 0
+    self.screenShake = {}
+
     self.game.signals.resize:connect(function(width, height)
         self.effect.resize(width, height)
     end)
@@ -64,19 +67,35 @@ function PlayState:enter()
 
     love.graphics.setBackgroundColor(self.game.palette.colors.primary:unpack())
 
-    -- sounds
+    -- handle signals
     self.listeners = {
         self.player.signals.jumped:connect(function()
             self.game.sound:play('jump')
         end),
         self.player.signals.landed:connect(function(velocity)
             self.game.sound:play('land', velocity / 25)
+
+            table.insert(
+                self.screenShake,
+                {
+                    duration = 0.4,
+                    magnitude = math.min(velocity / 15, 1)
+                }
+            )
         end),
         self.player.signals.dashed:connect(function()
             local source = self.game.sound:play('dash', 0.4)
             -- playback speed
             local originalLength = source:getDuration()
             source:setPitch(originalLength / self.player.dashDuration / 4)
+
+            table.insert(
+                self.screenShake,
+                {
+                    duration = self.player.dashDuration,
+                    magnitude = 60
+                }
+            )
         end)
     }
 
@@ -122,6 +141,32 @@ function PlayState:update(dt)
 end
 
 function PlayState:draw()
+    -- camera shake
+    local magnitude = 0
+    for i, shake in ipairs(self.screenShake) do
+        shake.duration = shake.duration - love.timer.getDelta()
+
+        shake.magnitude = mathf.lerp(0, shake.magnitude, shake.duration)
+
+        if shake.duration <= 0 then
+            shake.remove = true
+        end
+
+        magnitude = math.max(magnitude, shake.magnitude)
+    end
+
+    for i = #self.screenShake, 1, -1 do
+        if self.screenShake[i].remove then
+            table.remove(self.screenShake, i)
+        end
+    end
+
+    local shake = Vector2(math.random(-magnitude, magnitude),
+        math.random(-magnitude, magnitude))
+
+    love.graphics.translate(shake.x, shake.y)
+
+    -- draw the effect and then the scene
     self.effect(function()
         State.draw(self)
     end)
