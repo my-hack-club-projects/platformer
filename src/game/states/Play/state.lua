@@ -67,6 +67,9 @@ function PlayState:enter()
 
     self.fallingSound = self.game.sound:play('falling')
     self.fallingSound:setLooping(true)
+
+    self.music = self.game.sound:play('music' .. math.random(1, 3), 0.25)
+    self.music:setLooping(true)
 end
 
 function PlayState:updateCamera(dt)
