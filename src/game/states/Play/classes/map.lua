@@ -8,59 +8,43 @@ local Map = oo.class()
 function Map:init()
     self.width = 0
 
-    self.maxBranches = 3
-    self.maxDepth = 3
 
-    self.upDistance = { 2, 4 }
-    self.sideDistance = { 5, 15 }
-
-    self.padSize = { 1, 3 }
+    self.padSize = { 3, 5 }
+    self.padXOffset = { 5, 10 }
+    self.padYOffset = { 3, 5 }
 
     self.pads = {}
+    self.nPads = 100
 end
 
 function Map:generate()
     self.pads = {}
 
-    local startPad = Entity()
-    startPad.position = Vector2(0, 0)
-    startPad.size = Vector2(3, 1)
-    startPad.color = Color4(1, 1, 1, 1)
-    table.insert(self.pads, startPad)
+    local prevPadPosition = Vector2(0, 0)
+    for i = 1, self.nPads do
+        local pad = Entity()
 
-    local function recurse(pads, depth)
-        if depth > self.maxDepth then
-            return
+        local xOffset = math.random(self.padXOffset[1], self.padXOffset[2]) * (math.random(0, 1) == 0 and -1 or 1)
+
+        if prevPadPosition.x + xOffset < -self.width / 2 or prevPadPosition.x + xOffset > self.width / 2 then
+            xOffset = -xOffset
         end
 
-        for i, pad in ipairs(pads) do
-            local newPads = self:generateAdjacentPads(pad)
-            table.insert(self.pads, pad)
-            recurse(newPads, depth + 1)
-        end
+        pad.position = Vector2(
+            prevPadPosition.x + xOffset,
+            prevPadPosition.y - math.random(self.padYOffset[1], self.padYOffset[2])
+        )
+        pad.size = Vector2(
+            math.random(3, 5),
+            1
+        )
+
+        pad.anchored = true
+        pad.collide = true
+        table.insert(self.pads, pad)
+
+        prevPadPosition = pad.position
     end
-
-    recurse(self.pads, 1)
-end
-
-function Map:generateAdjacentPads(pad)
-    local pads = {}
-    local nPads = math.random(1, self.maxBranches)
-
-    for i = 1, nPads do
-        local newPad = Entity()
-        newPad.position = pad.position +
-            Vector2(math.random(-self.sideDistance[2], self.sideDistance[2]),
-                math.random(self.upDistance[1], self.upDistance[2]))
-        newPad.size = Vector2(math.random(table.unpack(self.padSize), 1))
-        newPad.color = Color4(1, 1, 1, 1)
-        newPad.anchored = true
-        newPad.collide = true
-
-        table.insert(pads, newPad)
-    end
-
-    return pads
 end
 
 return Map
