@@ -3,6 +3,7 @@ local mathf = require 'libs.mathf'
 local Color4 = require 'types.color4'
 local Vector2 = require 'types.vector2'
 local Entity = require 'libs.entity'
+local Signal = require 'libs.signal'
 
 local Player = oo.class(Entity)
 
@@ -47,6 +48,12 @@ function Player:init(game)
     self.dashMinStamina = 2
     self.dashSpeed = 40
     self.dashDuration = 0.2
+
+    self.signals = {
+        landed = Signal(),
+        jumped = Signal(),
+        dashed = Signal(),
+    }
 end
 
 function Player:update(dt, entities)
@@ -68,6 +75,11 @@ function Player:update(dt, entities)
                 self.isDashing = self.stamina > self.dashMinStamina and self.canDash
                 self.canDash = false
                 self.startedDashing = love.timer.getTime()
+
+                if self.isDashing then
+                    self.stamina = mathf.clamp(self.stamina - self.dashMinStamina, 0, self.maxStamina)
+                    self.signals.dashed:dispatch()
+                end
             end
         end
     else
@@ -104,6 +116,8 @@ function Player:update(dt, entities)
 
     -- jump
     if jump and not self.prevJump then
+        self.signals.jumped:dispatch()
+
         self.jumpCounter = self.jumpCounter + 1
         self.lastJumped = love.timer.getTime()
 
@@ -115,6 +129,10 @@ function Player:update(dt, entities)
 
     if self.isGrounded and love.timer.getTime() - self.lastJumped >= self.jumpDebounce then
         self.jumpCounter = 0
+    end
+
+    if self.isGrounded and not self.prevGrounded then
+        self.signals.landed:dispatch()
     end
 
     self.prevJump = jump

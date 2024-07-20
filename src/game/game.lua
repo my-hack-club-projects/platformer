@@ -1,6 +1,8 @@
 local oo = require 'libs.oo'
 local signal = require 'libs.signal'
+
 local Palette = require 'libs.palette'
+local Sound = require 'libs.sound'
 
 local Game = oo.class()
 
@@ -9,6 +11,9 @@ function Game:init()
     self.states = {}
     self.current = nil
     self.initial = nil
+
+    -- sound
+    self.sound = Sound()
 
     -- signals
     self.signals = {

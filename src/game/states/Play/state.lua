@@ -51,6 +51,16 @@ function PlayState:enter()
     end
 
     love.graphics.setBackgroundColor(self.game.palette.colors.primary:unpack())
+
+    -- sounds
+    self.listeners = {
+        self.player.signals.jumped:connect(function()
+            self.game.sound:play('jump')
+        end),
+        self.player.signals.dashed:connect(function()
+            self.game.sound:play('dash')
+        end)
+    }
 end
 
 function PlayState:updateCamera(dt)
