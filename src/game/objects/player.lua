@@ -15,6 +15,15 @@ function Player:init(game)
     self.size.y = 1
     self.color = Color4(1, 1, 1, 1)
 
+    self.colliderSizeOffset = Vector2(0.1, 0.1)
+
+    self.collider = Entity()
+    self.collider.position = self.position -- Reference
+    self.collider.size = self.size + self.colliderSizeOffset
+    self.collider.anchored = true
+    self.collider.collide = false
+    self.collider.color = Color4(1, 0, 0, 0.5)
+
     self.speed = 5 -- units per second
     self.sprintSpeed = 15
     self.acceleration = 10
@@ -132,7 +141,7 @@ function Player:update(dt, entities)
     end
 
     if self.isGrounded and not self.prevGrounded then
-        self.signals.landed:dispatch()
+        self.signals.landed:dispatch(self.velocity.y)
     end
 
     self.prevJump = jump
@@ -155,7 +164,11 @@ function Player:move(dt)
 end
 
 function Player:physics(dt, entities)
-    local entity, penetration = Entity.physics(self, dt, entities)
+    Entity.physics(self, dt, entities, { self.collider }) -- make the player collide
+
+    self.collider.position = self.position
+
+    local entity, penetration = Entity.physics(self.collider, dt, entities, { self }) -- collider to check if grounded
 
     self.isGrounded = entity and penetration
         and (penetration.x > penetration.y)
