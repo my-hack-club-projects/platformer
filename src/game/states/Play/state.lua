@@ -31,16 +31,10 @@ function PlayState:enter()
     self.player = self.entity.new(Player)
     self.player.gravity = self.game.Gravity
 
-    -- self.test = self.entity.new(Entity, "Test")
-    -- self.test.position = Vector2(0, -3)
-    -- self.test.size = Vector2(10, 1)
-    -- self.test.anchored = true
-
     self.map = Map(self.game)
     self.map:generate()
 
     for _, pad in ipairs(self.map.pads) do
-        print(pad.position, pad.size)
         self.entity.insert(pad)
     end
 end
