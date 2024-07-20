@@ -42,6 +42,7 @@ function Player:init(game)
     self.sprintMinStamina = 2
 
     self.isDashing = false
+    self.canDash = false
     self.startedDashing = 0
     self.dashMinStamina = 2
     self.dashSpeed = 40
@@ -64,7 +65,8 @@ function Player:update(dt, entities)
             if self.isGrounded then
                 self.isSprinting = self.stamina > self.sprintMinStamina
             else
-                self.isDashing = self.stamina > self.dashMinStamina
+                self.isDashing = self.stamina > self.dashMinStamina and self.canDash
+                self.canDash = false
                 self.startedDashing = love.timer.getTime()
             end
         end
@@ -94,7 +96,8 @@ function Player:update(dt, entities)
             self.velocity = Vector2(velocityIncrease * speed, self.velocity.y)
         end
     else
-        local speed = self.isSprinting and self.sprintSpeed or self.speed
+        -- local speed = self.isSprinting and self.sprintSpeed or self.speed
+        local speed = self.speed
         self.velocity.x = mathf.approach(self.velocity.x, velocityIncrease * speed,
             speed * dt * (self.isGrounded and self.acceleration or self.acceleration * self.midarAccelerationMultiplier))
     end
@@ -106,6 +109,8 @@ function Player:update(dt, entities)
 
         self.velocity.y = -self.jumpForce * self.stamina / self.maxStamina
         self.stamina = math.max(0, self.stamina - self.jumpStaminaCost)
+
+        self.canDash = true
     end
 
     if self.isGrounded and love.timer.getTime() - self.lastJumped >= self.jumpDebounce then
