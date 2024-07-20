@@ -58,7 +58,7 @@ function PlayState:enter()
             self.game.sound:play('jump')
         end),
         self.player.signals.landed:connect(function(velocity)
-            self.game.sound:play('land')
+            self.game.sound:play('land', velocity / 25)
         end),
         self.player.signals.dashed:connect(function()
             self.game.sound:play('dash')

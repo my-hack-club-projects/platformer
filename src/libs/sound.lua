@@ -47,8 +47,10 @@ function Sound:getInactiveSource(name)
     end
 end
 
-function Sound:play(name)
+function Sound:play(name, volume)
     local source = self:getInactiveSource(name) or self:newSource(name)
+    print(volume)
+    source:setVolume(volume or 1)
 
     source:play()
     return source
