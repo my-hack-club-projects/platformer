@@ -8,7 +8,7 @@ function love.load()
     local GameClass = require 'game.game'
 
     Game = GameClass()
-    Game.initial = "PlayState"
+    Game.initial = "MainMenu"
 
     -- load config
     Game:loadConfig(config)
