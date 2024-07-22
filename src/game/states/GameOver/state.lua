@@ -27,15 +27,28 @@ function GameOver:init(...)
     self.uis.title = Text()
     self.uis.title.text = "Game over!"
     self.uis.title.font = self.game.fonts[48]
-    self.uis.title.position = UDim2.new(0.5, 0, 0.3, 0)
+    self.uis.title.position = UDim2.new(0.5, 0, 0.05, 24)
+
+    self.uis.score_title = Text()
+    self.uis.score_title.text = "Your score was"
+    self.uis.score_title.font = self.game.fonts[14]
+    self.uis.score_title.position = UDim2.new(0.5, 0, 0.5, -64)
+
+    self.uis.score = Text()
+    self.uis.score.font = self.game.fonts[100]
+    self.uis.score.position = UDim2.new(0.5, 0, 0.5, 0)
 
     self.uis.retry = Text()
     self.uis.retry.text = "Try again"
     self.uis.retry.font = self.game.fonts[22]
-    self.uis.retry.position = UDim2.new(0.5, 0, 0.5, 16)
+    self.uis.retry.position = UDim2.new(0.5, 0, 0.7, 16)
+
+    self.game.signals.resize:connect(function(w, h)
+        self.effect.resize(w, h)
+    end)
 end
 
-function GameOver:enter()
+function GameOver:enter(prevState, data)
     self.listeners = {
         self.uis.retry.mouseDown:connect(function()
             self.game:setState("PlayState")
@@ -47,6 +60,8 @@ function GameOver:enter()
             self.uis.retry.color = Color4.fromHex("#FFFFFF")
         end),
     }
+
+    self.uis.score.text = data.score
 
     self.game.sound:play("lose")
 

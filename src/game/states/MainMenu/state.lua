@@ -28,13 +28,13 @@ function MainMenu:init(game)
     self.uis = {}
 
     self.uis.title = Text()
-    self.uis.title.text = "Game name"
-    self.uis.title.font = self.game.fonts[48]
+    self.uis.title.text = "Lava Jump!"
+    self.uis.title.font = self.game.fonts[64]
     self.uis.title.position = UDim2.new(0.5, 0, 0.3, 24)
 
     self.uis.play = Text()
     self.uis.play.text = "Play"
-    self.uis.play.font = self.game.fonts[16]
+    self.uis.play.font = self.game.fonts[32]
     self.uis.play.position = UDim2.new(0.5, 0, 0.5, 16)
 
     self.padAnimationSpeed = 2
@@ -61,6 +61,10 @@ function MainMenu:init(game)
     love.graphics.setBackgroundColor(self.game.palette.colors.primary:unpack())
 
     self:setPlayerPosition()
+
+    self.game.signals.resize:connect(function(w, h)
+        self.effect.resize(w, h)
+    end)
 end
 
 function MainMenu:setPlayerPosition()
