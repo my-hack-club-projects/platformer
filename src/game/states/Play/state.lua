@@ -9,6 +9,7 @@ local Player = require 'game.objects.player'
 local Entity = require 'libs.entity'
 local Map = require 'game.states.Play.classes.map'
 local Walls = require 'game.objects.walls'
+local StaminaCounter = require 'game.states.Play.classes.staminacounter'
 
 local PlayState = oo.class(State)
 
@@ -65,6 +66,8 @@ function PlayState:enter()
         self.entity.insert(wall)
     end
 
+    self.staminaCounter = StaminaCounter(self.player.maxStamina)
+
     love.graphics.setBackgroundColor(self.game.palette.colors.primary:unpack())
 
     -- handle signals
@@ -96,7 +99,8 @@ function PlayState:enter()
                     magnitude = 100
                 }
             )
-        end)
+        end),
+        self.player.signals.noStamina:connect(self.staminaCounter.shake, self.staminaCounter)
     }
 
     self.fallingSound = self.game.sound:play('falling')
@@ -130,6 +134,9 @@ end
 
 function PlayState:update(dt)
     State.update(self, dt)
+
+    self.staminaCounter:setStamina(self.player.stamina)
+    self.staminaCounter:update(dt)
 
     self:updateCamera(dt)
 
@@ -170,6 +177,8 @@ function PlayState:draw()
     self.effect(function()
         State.draw(self)
     end)
+
+    self.staminaCounter:draw()
 end
 
 return PlayState

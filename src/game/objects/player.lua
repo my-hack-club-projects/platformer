@@ -45,17 +45,18 @@ function Player:init(game)
     self.isSprintKeyHeld = false
     self.prevSprintKeyHeld = false
 
-    self.maxStamina = 100
+    self.maxStamina = 25
     self.stamina = self.maxStamina
-    self.staminaRegen = 10
-    self.staminaDepletion = 2
+    self.staminaRegen = 8
+    self.staminaDepletion = 2 -- unused, was for sprinting
     self.sprintMinStamina = 2
 
     self.isDashing = false
     self.canDash = false
     self.startedDashing = 0
     self.dashDirection = 0
-    self.dashMinStamina = 2
+    self.dashMinStamina = 5
+    self.dashStaminaCost = 5
     self.dashSpeed = 40
     self.dashDuration = 0.2
 
@@ -69,6 +70,7 @@ function Player:init(game)
         landed = Signal(),
         jumped = Signal(),
         dashed = Signal(),
+        noStamina = Signal(),
     }
 end
 
@@ -77,8 +79,12 @@ function Player:update(dt, entities)
 
     local velocityIncrease = (love.keyboard.isDown('a') and -1 or 0) + (love.keyboard.isDown('d') and 1 or 0)
     local jump = love.keyboard.isDown('w') and not self.prevJump and self.jumpCounter < self.maxJumpsBeforeGround and
-        love.timer.getTime() - self.lastJumped >= self.jumpDebounce and
-        self.stamina >= self.jumpMinStamina
+        love.timer.getTime() - self.lastJumped >= self.jumpDebounce
+
+    if jump and self.stamina < self.jumpMinStamina then
+        jump = false
+        self.signals.noStamina:dispatch()
+    end
 
     -- sprint
     if love.keyboard.isDown('lshift') then
@@ -88,14 +94,22 @@ function Player:update(dt, entities)
             if self.isGrounded then
                 self.isSprinting = self.stamina > self.sprintMinStamina
             else
-                self.isDashing = self.stamina > self.dashMinStamina and self.canDash and math.abs(velocityIncrease) > 0
+                local wantsToDash = self.canDash and math.abs(velocityIncrease) > 0
+
+                if wantsToDash and self.stamina < self.dashMinStamina then
+                    wantsToDash = false
+                    self.signals.noStamina:dispatch()
+                end
+
+                self.isDashing = wantsToDash
+
                 self.canDash = false
                 self.startedDashing = love.timer.getTime()
 
                 if self.isDashing then
                     self.dashDirection = velocityIncrease
 
-                    self.stamina = mathf.clamp(self.stamina - self.dashMinStamina, 0, self.maxStamina)
+                    self.stamina = mathf.clamp(self.stamina - self.dashStaminaCost, 0, self.maxStamina)
                     self.signals.dashed:dispatch()
                 end
             end

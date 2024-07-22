@@ -19,6 +19,12 @@ function mathf.approach(current, target, maxDelta)
     return current + mathf.clamp(target - current, -maxDelta, maxDelta)
 end
 
+function mathf.map(value, inMin, inMax, outMin, outMax)
+    assert(value and inMin and inMax and outMin and outMax, "All arguments must be provided")
+
+    return outMin + (value - inMin) * (outMax - outMin) / (inMax - inMin)
+end
+
 function mathf.round(value)
     assert(value, "Value must be provided")
 
