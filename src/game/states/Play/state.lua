@@ -38,6 +38,7 @@ end
 
 function PlayState:enter()
     self.camera = Camera(self.game)
+    self.camera:scaleTo(2, 2)
 
     self.floor = Floor(self.game)
     self.floor:fillWidth(self.width)
