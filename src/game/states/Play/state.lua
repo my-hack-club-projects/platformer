@@ -60,6 +60,11 @@ function PlayState:enter()
         self.entity.insert(pad)
     end
 
+    for _, finish in ipairs(self.map:addFinish()) do
+        print(finish.position, finish.size)
+        self.entity.insert(finish)
+    end
+
     self.walls = Walls(self.width, self.height)
 
     for _, wall in ipairs(self.walls.walls) do

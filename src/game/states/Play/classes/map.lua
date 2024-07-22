@@ -8,13 +8,12 @@ local Map = oo.class()
 function Map:init()
     self.width = 0
 
-
     self.padSize = { 3, 5 }
     self.padXOffset = { 5, 10 }
     self.padYOffset = { 3, 5 }
 
     self.pads = {}
-    self.nPads = 100
+    self.nPads = 3 --100
 end
 
 function Map:generate()
@@ -47,6 +46,28 @@ function Map:generate()
 
         prevPadPosition = pad.position
     end
+end
+
+function Map:addFinish()
+    local lastPad = self.pads[#self.pads]
+    local distanceFromEdge = math.min(
+        (lastPad.position.x - lastPad.size.x / 2) + self.width / 2,
+        (lastPad.position.x + lastPad.size.x / 2) - self.width / 2
+    )
+    local finishPlatformPosition = Vector2(lastPad.position.x + distanceFromEdge / 2, lastPad.position.y)
+    local finishPlatformSize = Vector2(math.abs(distanceFromEdge), lastPad.size.Y)
+
+    local platform = Entity("FinishPlatform")
+    platform.position = finishPlatformPosition
+    platform.size = finishPlatformSize
+    platform.anchored = true
+    platform.collide = true
+    platform.color = lastPad.color
+
+    print('lastPad', lastPad.position, lastPad.size)
+    print('finish', platform.position, platform.size)
+
+    return { platform }
 end
 
 return Map
