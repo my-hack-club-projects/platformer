@@ -144,6 +144,17 @@ function PlayState:enter()
     self.music:setLooping(true)
 end
 
+function PlayState:exit()
+    State.exit(self)
+
+    for _, listener in ipairs(self.listeners) do
+        listener:disconnect()
+    end
+
+    self.fallingSound:stop()
+    self.music:stop()
+end
+
 function PlayState:updateCamera(dt)
     local cameraRealSize = self.camera:getRealSize()
     local cameraClamp = {
