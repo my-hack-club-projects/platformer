@@ -7,6 +7,7 @@ local Portal = oo.class(Entity)
 function Portal:init(...)
     Entity.init(self, ...)
 
+    self.touchWhitelist = { "Player" }
     self.playerTouched = Signal()
 end
 
