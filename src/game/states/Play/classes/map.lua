@@ -16,6 +16,8 @@ function Map:init(game)
 
     self.pads = {}
     self.nPads = 3 --100
+
+    self.portalColor = Color4.fromHex("#9130b8")
 end
 
 function Map:generate()
@@ -52,10 +54,13 @@ end
 
 function Map:addFinish()
     local lastPad = self.pads[#self.pads]
-    local distanceFromEdge = math.min(
-        math.abs(lastPad.position.x - self.width / 2),
-        math.abs(lastPad.position.x + self.width / 2)
-    ) * mathf.sign(lastPad.position.x)
+    local prevPad = self.pads[#self.pads - 1]
+
+    local direction = mathf.sign(lastPad.position.x - prevPad.position.x)
+
+    local distanceFromEdge = math.abs(
+        (lastPad.position.x + lastPad.size.x / 2 * direction) - self.width / 2 * direction
+    ) * direction
 
     local finishPlatformPosition = Vector2(lastPad.position.x + distanceFromEdge / 2, lastPad.position.y)
     local finishPlatformSize = Vector2(math.abs(distanceFromEdge), lastPad.size.y)
@@ -65,8 +70,20 @@ function Map:addFinish()
     platform.size = finishPlatformSize
     platform.anchored = true
     platform.collide = true
+    platform.color = lastPad.color
 
-    return { platform }
+    local portal = Entity("FinishPortal")
+    portal.size = Vector2(1, 3)
+    portal.position = finishPlatformPosition
+        + finishPlatformSize / 2 * direction
+        - Vector2(0, portal.size.y / 2)
+        - Vector2(portal.size.y / 2, 0) * direction
+
+    portal.anchored = true
+    portal.collide = false
+    portal.color = self.portalColor
+
+    return { portal, platform }
 end
 
 return Map

@@ -62,7 +62,6 @@ function PlayState:enter()
     end
 
     for _, finish in ipairs(self.map:addFinish()) do
-        finish.color = self.game.palette.colors.secondary
         self.entity.insert(finish)
     end
 
