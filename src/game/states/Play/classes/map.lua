@@ -16,12 +16,13 @@ function Map:init(game)
     self.padYOffset = { 3, 5 }
 
     self.pads = {}
-    self.nPads = 3 --100
+    self.nPads = 0
 
     self.portalColor = Color4.fromHex("#9130b8")
 end
 
-function Map:generate()
+function Map:generate(nPads)
+    self.nPads = nPads
     self.pads = {}
 
     local prevPadPosition = Vector2(0, 0)

@@ -48,7 +48,7 @@ function PlayState:enter()
 
     self.map = Map(self.game)
     self.map.width = self.width
-    self.map:generate()
+    self.map:generate(3)
 
     for _, pad in ipairs(self.map.pads) do
         pad.color = self.game.palette.colors.secondary
