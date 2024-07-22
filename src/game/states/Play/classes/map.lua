@@ -1,11 +1,13 @@
 local oo = require 'libs.oo'
+local mathf = require 'libs.mathf'
 local Vector2 = require 'types.vector2'
 local Color4 = require 'types.color4'
 local Entity = require 'libs.entity'
 
 local Map = oo.class()
 
-function Map:init()
+function Map:init(game)
+    self.game = game
     self.width = 0
 
     self.padSize = { 3, 5 }
@@ -51,21 +53,18 @@ end
 function Map:addFinish()
     local lastPad = self.pads[#self.pads]
     local distanceFromEdge = math.min(
-        (lastPad.position.x - lastPad.size.x / 2) + self.width / 2,
-        (lastPad.position.x + lastPad.size.x / 2) - self.width / 2
-    )
+        math.abs(lastPad.position.x - self.width / 2),
+        math.abs(lastPad.position.x + self.width / 2)
+    ) * mathf.sign(lastPad.position.x)
+
     local finishPlatformPosition = Vector2(lastPad.position.x + distanceFromEdge / 2, lastPad.position.y)
-    local finishPlatformSize = Vector2(math.abs(distanceFromEdge), lastPad.size.Y)
+    local finishPlatformSize = Vector2(math.abs(distanceFromEdge), lastPad.size.y)
 
     local platform = Entity("FinishPlatform")
     platform.position = finishPlatformPosition
     platform.size = finishPlatformSize
     platform.anchored = true
     platform.collide = true
-    platform.color = lastPad.color
-
-    print('lastPad', lastPad.position, lastPad.size)
-    print('finish', platform.position, platform.size)
 
     return { platform }
 end

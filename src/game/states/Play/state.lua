@@ -53,6 +53,7 @@ function PlayState:enter()
     self.player.color = self.game.palette.colors.secondary
 
     self.map = Map(self.game)
+    self.map.width = self.width
     self.map:generate()
 
     for _, pad in ipairs(self.map.pads) do
@@ -61,7 +62,7 @@ function PlayState:enter()
     end
 
     for _, finish in ipairs(self.map:addFinish()) do
-        print(finish.position, finish.size)
+        finish.color = self.game.palette.colors.secondary
         self.entity.insert(finish)
     end
 
