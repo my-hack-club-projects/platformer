@@ -10,7 +10,8 @@ local Color4 = require 'types.color4'
 
 local UI, Text = import({ 'UI', 'Text' }, 'libs.ui')
 
-local Map, Entity = require 'game.states.Play.classes.map', require 'libs.entity'
+local Map, Entity, Lava = require 'game.states.Play.classes.map', require 'libs.entity',
+    require 'game.states.Play.classes.lava'
 local Camera = require 'libs.camera'
 
 local MainMenu = oo.class(State)
@@ -55,6 +56,14 @@ function MainMenu:init(game)
     self.player.position = self.map.pads[1].position - Vector2.new(0, 1)
     self.player.size = Vector2.new(1, 1)
     self.player.color = self.game.palette.colors.tiertary
+
+    self.lava = Lava()
+    self.lava.position = Vector2.new(0, 0)
+    self.lava.positionOffset = 20
+    self.lava.size = Vector2.new(self.map.width * 10, 1)
+    self.lava.maxSize = 1000
+    self.lava.color = self.game.palette.colors.tiertary
+    self.lava.riseSpeed = 1
 
     self.camera.position = self.player.position - Vector2.new(0, 5)
 
@@ -105,6 +114,8 @@ function MainMenu:update(dt)
         end
     end
 
+    self.lava:update(dt, {})
+
     self:setPlayerPosition()
 
     for _, ui in pairs(self.uis) do
@@ -119,6 +130,7 @@ function MainMenu:draw()
             pad:draw(self.game.UnitSize)
         end
         self.player:draw(self.game.UnitSize)
+        self.lava:draw(self.game.UnitSize)
         self.camera:detach()
     end)
 

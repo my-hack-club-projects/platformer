@@ -12,6 +12,7 @@ function Lava:init(...)
 
     self.riseSpeed = 0.5
     self.maxSize = 0
+    self.positionOffset = 0
 
     self.touchWhitelist = { "Player" }
     self.playerTouched = Signal()
@@ -29,7 +30,7 @@ function Lava:update(dt, entities)
     end
 
     self.size.y = self.size.y + self.riseSpeed * dt
-    self.position.y = -self.size.y / 2
+    self.position.y = -self.size.y / 2 + self.positionOffset
 
     self:physics(dt, entities)
 end
