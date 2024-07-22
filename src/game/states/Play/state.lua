@@ -162,7 +162,7 @@ function PlayState:enter(prevState, data)
         end),
     }
 
-    self.fallingSound = self.game.sound:play('falling')
+    self.fallingSound = self.game.sound:play('falling', 0)
     self.fallingSound:setLooping(true)
 
     self.music = self.game.sound:play('music' .. math.random(1, 2), 0.25)
