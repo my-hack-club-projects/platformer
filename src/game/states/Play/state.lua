@@ -47,7 +47,7 @@ function PlayState:enter()
     self.camera:scaleTo(2, 2)
 
     self.map = Map(self.game)
-    self.map.width = self.width
+    self.map.width = self.width / 3 * 2
     self.map:generate(3)
 
     for _, pad in ipairs(self.map.pads) do

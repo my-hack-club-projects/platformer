@@ -117,6 +117,8 @@ function MainMenu:draw()
     for _, ui in pairs(self.uis) do
         ui:draw()
     end
+
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 return MainMenu

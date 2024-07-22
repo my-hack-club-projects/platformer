@@ -78,10 +78,11 @@ function Map:addFinish()
 
     local portal = Portal("FinishPortal")
     portal.size = Vector2(1, 3)
-    portal.position = finishPlatformPosition
-        + finishPlatformSize / 2 * direction
-        - Vector2(0, portal.size.y / 2)
-        - Vector2(portal.size.y / 2, 0) * direction
+
+    portal.position = Vector2(
+        finishPlatformPosition.x + (finishPlatformSize.x / 2 - portal.size.x / 2) * direction,
+        finishPlatformPosition.y - finishPlatformSize.y / 2 - portal.size.y / 2
+    )
 
     portal.anchored = true
     portal.collide = false
