@@ -166,6 +166,8 @@ function PlayState:enter(prevState, data)
 
     self.music = self.game.sound:play('music' .. math.random(1, 2), 0.25)
     self.music:setLooping(true)
+
+    table.insert(self.screenShake, { duration = 1, magnitude = 10 })
 end
 
 function PlayState:exit()
