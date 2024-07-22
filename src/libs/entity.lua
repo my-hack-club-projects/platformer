@@ -31,6 +31,7 @@ function Entity:init(name)
     self.velocity = Vector2(0, 0)
 
     self.touched = Signal()
+    self.touchWhitelist = nil
 end
 
 function Entity:destroy()
@@ -59,6 +60,10 @@ function Entity:physics(dt, entities, ignoreList)
     end
 
     for i, entity in ipairs(entities) do
+        if self.touchWhitelist and not _find(self.touchWhitelist, entity.name) then
+            goto continue
+        end
+
         if entity ~= self and entity.collide and not _find(ignoreList, entity) then
             if self:collides(entity) then
                 local penetration = Vector2(
@@ -88,6 +93,8 @@ function Entity:physics(dt, entities, ignoreList)
                 return entity, penetration
             end
         end
+
+        ::continue::
     end
 
     return nil

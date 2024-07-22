@@ -9,6 +9,7 @@ local Player = require 'game.objects.player'
 local Entity = require 'libs.entity'
 local Map = require 'game.states.Play.classes.map'
 local Walls = require 'game.objects.walls'
+local Lava = require 'game.states.Play.classes.lava'
 local StaminaCounter = require 'game.states.Play.classes.staminacounter'
 local ScoreCounter = require 'game.states.Play.classes.scorecounter'
 
@@ -45,17 +46,14 @@ function PlayState:enter()
     self.camera = Camera(self.game)
     self.camera:scaleTo(2, 2)
 
-    self.floor = Floor(self.game)
-    self.floor:fillWidth(self.width)
+    -- self.floor = Floor(self.game)
+    -- self.floor:fillWidth(self.width)
 
-    for _, segment in ipairs(self.floor.segments) do
-        segment.color = self.game.palette.colors.tiertary
-        self.entity.insert(segment)
-    end
+    -- for _, segment in ipairs(self.floor.segments) do
+    --     segment.color = self.game.palette.colors.tiertary
+    --     self.entity.insert(segment)
+    -- end
 
-    self.player = self.entity.new(Player, "Player")
-    self.player.gravity = self.game.Gravity
-    self.player.color = self.game.palette.colors.secondary
 
     self.map = Map(self.game)
     self.map.width = self.width
@@ -74,12 +72,22 @@ function PlayState:enter()
         end
     end
 
+    self.player = self.entity.new(Player, "Player")
+    self.player.position = self.map.pads[1].position - Vector2(0, self.map.pads[1].size.y / 2 + self.player.size.y / 2)
+    self.player.gravity = self.game.Gravity
+    self.player.color = self.game.palette.colors.secondary
+
     self.walls = Walls(self.width, self.height)
 
     for _, wall in ipairs(self.walls.walls) do
         wall.color = self.game.palette.colors.secondary
         self.entity.insert(wall)
     end
+
+    self.lava = self.entity.new(Lava, "Lava")
+    self.lava.size = Vector2(self.width, 0)
+    self.lava.maxSize = self.portal.position.y - 5
+    self.lava.color = self.game.palette.colors.tiertary
 
     self.staminaCounter = StaminaCounter(self.player.maxStamina)
     self.scoreCounter = ScoreCounter()
@@ -130,6 +138,9 @@ function PlayState:enter()
         end),
 
         self.portal.playerTouched:connect(function()
+            love.event.quit()
+        end),
+        self.lava.playerTouched:connect(function()
             love.event.quit()
         end),
     }
