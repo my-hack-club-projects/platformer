@@ -47,12 +47,19 @@ function GameOver:enter()
             self.uis.retry.color = Color4.fromHex("#FFFFFF")
         end),
     }
+
+    self.game.sound:play("lose")
+
+    self.music = self.game.sound:play("main_menu_music", 0.1)
+    self.music:setLooping(true)
 end
 
 function GameOver:exit()
     for _, listener in pairs(self.listeners) do
         listener:disconnect()
     end
+
+    self.music:stop()
 
     State.exit(self.prevState)
 end

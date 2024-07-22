@@ -80,12 +80,17 @@ function MainMenu:enter()
             self.uis.play.color = Color4.fromHex("#FFFFFF")
         end),
     }
+
+    self.music = self.game.sound:play("main_menu_music", 0.1)
+    self.music:setLooping(true)
 end
 
 function MainMenu:exit()
     for _, listener in pairs(self.listeners) do
         listener:disconnect()
     end
+
+    self.music:stop()
 end
 
 function MainMenu:update(dt)
