@@ -13,6 +13,12 @@ function mathf.lerp(a, b, t)
     return a + (b - a) * t
 end
 
+function mathf.clerp(a, b, t)
+    assert(a and b and t, "All arguments must be provided")
+
+    return mathf.clamp(mathf.lerp(a, b, t), a, b)
+end
+
 function mathf.approach(current, target, maxDelta)
     assert(current and target and maxDelta, "All arguments must be provided")
 

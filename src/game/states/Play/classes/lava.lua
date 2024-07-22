@@ -24,7 +24,7 @@ function Lava:init(...)
 end
 
 function Lava:update(dt, entities)
-    if self.size.y < self.maxSize then
+    if self.size.y > self.maxSize then
         return
     end
 

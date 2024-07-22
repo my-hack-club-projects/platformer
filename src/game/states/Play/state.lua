@@ -13,6 +13,13 @@ local Lava = require 'game.states.Play.classes.lava'
 local StaminaCounter = require 'game.states.Play.classes.staminacounter'
 local ScoreCounter = require 'game.states.Play.classes.scorecounter'
 
+local function _addPads(currentPads)
+    -- calculate how many pads to add and return the new number of pads
+    -- formula: 2 * currentPads + 1. This means that the number of pads will be: 3, 7, 15, 31, 64, 127, 255, ...
+
+    return 2 * currentPads + 1
+end
+
 local PlayState = oo.class(State)
 
 function PlayState:init(game)
@@ -20,7 +27,8 @@ function PlayState:init(game)
 
     self.name = "PlayState"
 
-    self.width = 50
+    self.width = 80
+    self.maxDifficultyLevel = 7
 
     -- shaders
     self.effect = moonshine(moonshine.effects.crt)
@@ -41,7 +49,23 @@ function PlayState:enter(prevState, data)
     self.data = data or {
         score = 0,
         time = 0,
+        level = 0,
+        nPads = 1,
+        padSize = { 4, 7 },
+        padXOffset = { 5, 10 },
+        padYOffset = { 2, 5 },
+        lavaSpeed = 0.5,
     }
+
+    self.data.level = self.data.level + 1
+
+    self.data.nPads = 2 * self.data.nPads + 1
+    self.data.padSize[1] = mathf.clerp(4, 1, self.data.level / self.maxDifficultyLevel)
+    self.data.padXOffset[1] = mathf.clerp(5, 0, self.data.level / self.maxDifficultyLevel)
+    self.data.padXOffset[2] = mathf.clerp(10, 5, self.data.level / self.maxDifficultyLevel)
+    self.data.padYOffset[1] = mathf.clerp(2, 4, self.data.level / self.maxDifficultyLevel)
+    self.data.padYOffset[2] = mathf.clerp(5, 6, self.data.level / self.maxDifficultyLevel)
+    self.data.lavaSpeed = mathf.clerp(0.5, 6, self.data.level / self.maxDifficultyLevel)
 
     self.camera = Camera(self.game)
     self.camera:scaleTo(2, 2)
@@ -49,7 +73,10 @@ function PlayState:enter(prevState, data)
     self.map = Map(self.game)
     self.map.width = self.width / 3 * 2
     self.map.startNumber = self.data.score
-    self.map:generate(3)
+    self.map.padSize = self.data.padSize
+    self.map.padXOffset = self.data.padXOffset
+    self.map.padYOffset = self.data.padYOffset
+    self.map:generate(self.data.nPads)
 
     for _, pad in ipairs(self.map.pads) do
         pad.color = self.game.palette.colors.secondary
@@ -72,8 +99,9 @@ function PlayState:enter(prevState, data)
 
     self.lava = self.entity.new(Lava, "Lava")
     self.lava.size = Vector2(self.width * 10, 0)
-    self.lava.maxSize = self.portal.position.y - 5
+    self.lava.maxSize = math.abs(self.portal.position.y) - 5
     self.lava.color = self.game.palette.colors.tiertary
+    self.lava.riseSpeed = self.data.lavaSpeed
 
     self.staminaCounter = StaminaCounter(self.player.maxStamina)
 
