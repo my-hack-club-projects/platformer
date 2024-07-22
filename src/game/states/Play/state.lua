@@ -21,7 +21,6 @@ function PlayState:init(game)
     self.name = "PlayState"
 
     self.width = 50
-    self.height = 500
 
     -- shaders
     self.effect = moonshine(moonshine.effects.crt)
@@ -71,15 +70,8 @@ function PlayState:enter(prevState, data)
     self.player.gravity = self.game.Gravity
     self.player.color = self.game.palette.colors.secondary
 
-    self.walls = Walls(self.width, self.height)
-
-    for _, wall in ipairs(self.walls.walls) do
-        wall.color = self.game.palette.colors.secondary
-        self.entity.insert(wall)
-    end
-
     self.lava = self.entity.new(Lava, "Lava")
-    self.lava.size = Vector2(self.width, 0)
+    self.lava.size = Vector2(self.width * 10, 0)
     self.lava.maxSize = self.portal.position.y - 5
     self.lava.color = self.game.palette.colors.tiertary
 
