@@ -18,5 +18,5 @@ return function(modules, path)
         table.insert(result, allModules[module])
     end
 
-    return table.unpack(result)
+    return unpack(result)
 end

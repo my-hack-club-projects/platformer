@@ -26,6 +26,10 @@ function love.load()
 end
 
 function love.update(dt)
+    if dt > 1 / 10 then
+        dt = 1 / 10
+    end
+
     Game:update(dt)
 end
 

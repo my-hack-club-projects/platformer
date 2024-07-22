@@ -17,7 +17,7 @@ local function colorOperation(color1, color2, operation)
         t[i] = operation(color1.components[i] or 0, color2.components[i] or 0)
     end
 
-    return Color4(table.unpack(t))
+    return Color4(unpack(t))
 end
 
 function Color4:init(r, g, b, a)
