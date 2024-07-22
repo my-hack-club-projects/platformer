@@ -35,6 +35,15 @@ function Game:init()
         postUpdate = signal.new(),
     }
 
+    -- fonts
+    self.fonts = setmetatable({}, {
+        __index = function(t, k)
+            local font = love.graphics.newFont('assets/fonts/PressStart2P.ttf', k)
+            rawset(t, k, font)
+            return font
+        end
+    })
+
     -- properties
     self.UnitSize = 32
 

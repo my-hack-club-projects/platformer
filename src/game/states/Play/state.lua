@@ -64,7 +64,8 @@ function PlayState:enter()
     end
 
     self.player = self.entity.new(Player, "Player")
-    self.player.position = self.map.pads[1].position - Vector2(0, self.map.pads[1].size.y / 2 + self.player.size.y / 2)
+    self.player.position = self.map.pads[1].position -
+        Vector2(0, self.map.pads[1].size.y / 2 + self.player.size.y / 2) - Vector2(0, 3)
     self.player.gravity = self.game.Gravity
     self.player.color = self.game.palette.colors.secondary
 
