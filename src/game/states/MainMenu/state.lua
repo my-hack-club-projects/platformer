@@ -19,19 +19,18 @@ function MainMenu:init(game)
     State.init(self, game)
 
     self.name = "MainMenu"
-    self.effect = moonshine(moonshine.effects.gaussianblur).chain(moonshine.effects.vignette)
-
+    self.effect = moonshine(moonshine.effects.pixelate).chain(moonshine.effects.desaturate)
     self.effect.parameters = {
-        gaussianblur = { sigma = 2 },
-        vignette = { radius = 1, opacity = 0.5 },
+        pixelate = { size = 4 },
+        desaturate = { tint = { 50, 50, 50 }, strength = 0.5 },
     }
 
     self.uis = {}
 
     self.uis.title = Text()
     self.uis.title.text = "Game name"
-    self.uis.title.font = self.game.fonts[24]
-    self.uis.title.position = UDim2.new(0.5, 0, 0.1, 24)
+    self.uis.title.font = self.game.fonts[48]
+    self.uis.title.position = UDim2.new(0.5, 0, 0.3, 24)
 
     self.uis.play = Text()
     self.uis.play.text = "Play"
