@@ -154,10 +154,11 @@ function PlayState:enter(prevState, data)
         end),
 
         self.portal.playerTouched:connect(function()
+            State.exit(self)
             self.game:setState("PlayState", self.data)
         end),
         self.lava.playerTouched:connect(function()
-            love.event.quit()
+            self.game:setState("GameOver", self.data)
         end),
     }
 
@@ -171,7 +172,8 @@ function PlayState:enter(prevState, data)
 end
 
 function PlayState:exit()
-    State.exit(self)
+    -- Note: clearing entities will be handled in the GameOver state
+    -- why? We want to keep rendering the last frame
 
     for _, listener in ipairs(self.listeners) do
         listener:disconnect()
