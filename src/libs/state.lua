@@ -51,7 +51,7 @@ function State:enter()
 end
 
 function State:exit()
-    for i, entity in ipairs(self.entities) do
+    for i, entity in ipairs(self._entities) do
         entity:destroy()
     end
 

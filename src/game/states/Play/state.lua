@@ -130,7 +130,7 @@ function PlayState:enter()
         end),
 
         self.portal.playerTouched:connect(function()
-            love.event.quit()
+            self.game:resetState()
         end),
         self.lava.playerTouched:connect(function()
             love.event.quit()
