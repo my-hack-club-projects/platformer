@@ -29,6 +29,8 @@ function Entity:init(name)
     self.gravity = 0
     self.mass = 1
     self.velocity = Vector2(0, 0)
+
+    self.touched = Signal()
 end
 
 function Entity:destroy()
@@ -80,6 +82,8 @@ function Entity:physics(dt, entities, ignoreList)
                         end
                     end
                 end
+
+                self.touched:dispatch(entity)
 
                 return entity, penetration
             end

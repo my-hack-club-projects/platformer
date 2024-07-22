@@ -26,7 +26,8 @@ function Map:generate()
 
     local prevPadPosition = Vector2(0, 0)
     for i = 1, self.nPads do
-        local pad = Entity()
+        local pad = Entity("Pad")
+        pad.number = i
 
         local xOffset = math.random(self.padXOffset[1], self.padXOffset[2]) * (math.random(0, 1) == 0 and -1 or 1)
 
@@ -72,6 +73,7 @@ function Map:addFinish()
     platform.anchored = true
     platform.collide = true
     platform.color = lastPad.color
+    platform.number = lastPad.number
 
     local portal = Portal("FinishPortal")
     portal.size = Vector2(1, 3)

@@ -13,4 +13,8 @@ function UDim2:toVector2(size)
     return Vector2(self.x:toPixels(size.x), self.y:toPixels(size.y))
 end
 
+function UDim2:tostring()
+    return 'UDim2(' .. self.x:tostring() .. ', ' .. self.y:tostring() .. ')'
+end
+
 return UDim2

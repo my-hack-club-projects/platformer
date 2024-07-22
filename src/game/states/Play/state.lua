@@ -10,6 +10,7 @@ local Entity = require 'libs.entity'
 local Map = require 'game.states.Play.classes.map'
 local Walls = require 'game.objects.walls'
 local StaminaCounter = require 'game.states.Play.classes.staminacounter'
+local ScoreCounter = require 'game.states.Play.classes.scorecounter'
 
 local PlayState = oo.class(State)
 
@@ -37,6 +38,10 @@ function PlayState:init(game)
 end
 
 function PlayState:enter()
+    self.data = {
+        score = 0,
+    }
+
     self.camera = Camera(self.game)
     self.camera:scaleTo(2, 2)
 
@@ -77,6 +82,7 @@ function PlayState:enter()
     end
 
     self.staminaCounter = StaminaCounter(self.player.maxStamina)
+    self.scoreCounter = ScoreCounter()
 
     love.graphics.setBackgroundColor(self.game.palette.colors.primary:unpack())
 
@@ -112,9 +118,20 @@ function PlayState:enter()
         end),
         self.player.signals.noStamina:connect(self.staminaCounter.shake, self.staminaCounter),
 
+        self.player.touched:connect(function(entity)
+            if entity.name ~= "Pad" then
+                return
+            end
+
+            local number = entity.number
+
+            self.data.score = math.max(self.data.score, number)
+            self.scoreCounter:setScore(self.data.score)
+        end),
+
         self.portal.playerTouched:connect(function()
             love.event.quit()
-        end)
+        end),
     }
 
     self.fallingSound = self.game.sound:play('falling')
@@ -193,6 +210,7 @@ function PlayState:draw()
     end)
 
     self.staminaCounter:draw()
+    self.scoreCounter:draw()
 end
 
 return PlayState
