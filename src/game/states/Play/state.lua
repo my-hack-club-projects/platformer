@@ -48,7 +48,7 @@ function PlayState:enter()
         self.entity.insert(segment)
     end
 
-    self.player = self.entity.new(Player)
+    self.player = self.entity.new(Player, "Player")
     self.player.gravity = self.game.Gravity
     self.player.color = self.game.palette.colors.secondary
 
@@ -61,8 +61,12 @@ function PlayState:enter()
         self.entity.insert(pad)
     end
 
-    for _, finish in ipairs(self.map:addFinish()) do
+    for i, finish in pairs(self.map:addFinish()) do
         self.entity.insert(finish)
+
+        if i == "portal" then
+            self.portal = finish
+        end
     end
 
     self.walls = Walls(self.width, self.height)
@@ -106,7 +110,11 @@ function PlayState:enter()
                 }
             )
         end),
-        self.player.signals.noStamina:connect(self.staminaCounter.shake, self.staminaCounter)
+        self.player.signals.noStamina:connect(self.staminaCounter.shake, self.staminaCounter),
+
+        self.portal.playerTouched:connect(function()
+            love.event.quit()
+        end)
     }
 
     self.fallingSound = self.game.sound:play('falling')

@@ -3,6 +3,7 @@ local mathf = require 'libs.mathf'
 local Vector2 = require 'types.vector2'
 local Color4 = require 'types.color4'
 local Entity = require 'libs.entity'
+local Portal = require 'game.objects.portal'
 
 local Map = oo.class()
 
@@ -72,7 +73,7 @@ function Map:addFinish()
     platform.collide = true
     platform.color = lastPad.color
 
-    local portal = Entity("FinishPortal")
+    local portal = Portal("FinishPortal")
     portal.size = Vector2(1, 3)
     portal.position = finishPlatformPosition
         + finishPlatformSize / 2 * direction
@@ -83,7 +84,10 @@ function Map:addFinish()
     portal.collide = false
     portal.color = self.portalColor
 
-    return { portal, platform }
+    return {
+        platform = platform,
+        portal = portal
+    }
 end
 
 return Map

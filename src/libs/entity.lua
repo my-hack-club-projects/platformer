@@ -1,4 +1,5 @@
 local oo = require 'libs.oo'
+local Signal = require 'libs.signal'
 local Vector2 = require 'types.vector2'
 local Color4 = require 'types.color4'
 
