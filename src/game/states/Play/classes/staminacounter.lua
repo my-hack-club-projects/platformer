@@ -9,8 +9,8 @@ function StaminaCounter:init(maxStamina)
     self.stamina = 0
     self.maxStamina = maxStamina or 0
 
-    self.currentPercent = 0
-    self.targetPercent = 0
+    self.currentPercent = 1
+    self.targetPercent = 1
     self.lerpSpeed = 10
 
     self.position = UDim2.new(0.5, 0, 1, -15)
@@ -74,8 +74,15 @@ function StaminaCounter:drawBar(pos, size)
     love.graphics.rectangle('fill', -size.x / 2, -size.y / 2, size.x, size.y)
     -- draw white bar
     love.graphics.setColor(1, 1, 1)
-    love.graphics.rectangle('fill', -size.x / 2 + self.thickness / 2, -size.y / 2 + self.thickness / 2,
-        size.x * self.currentPercent - self.thickness, size.y - self.thickness)
+
+    love.graphics.rectangle(
+        'fill',
+        -size.x / 2 + self.thickness / 2 + (1 - self.currentPercent) * size.x / 2,
+        -size.y / 2 + self.thickness / 2,
+        size.x * self.currentPercent - self.thickness,
+        size.y - self.thickness
+    )
+
     love.graphics.pop()
 end
 
