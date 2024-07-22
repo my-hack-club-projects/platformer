@@ -14,8 +14,8 @@ function StaminaCounter:init(maxStamina)
     self.lerpSpeed = 10
 
     self.position = UDim2.new(0.5, 0, 1, -15)
-    self.size = UDim2.new(0.4, 0, 0, 5)
-    self.thickness = 2
+    self.size = UDim2.new(0.4, 0, 0, 10)
+    self.thickness = 6
 
     self.shakes = {}
     self.shakeMagnitude = 15
