@@ -46,15 +46,6 @@ function PlayState:enter()
     self.camera = Camera(self.game)
     self.camera:scaleTo(2, 2)
 
-    -- self.floor = Floor(self.game)
-    -- self.floor:fillWidth(self.width)
-
-    -- for _, segment in ipairs(self.floor.segments) do
-    --     segment.color = self.game.palette.colors.tiertary
-    --     self.entity.insert(segment)
-    -- end
-
-
     self.map = Map(self.game)
     self.map.width = self.width
     self.map:generate()
