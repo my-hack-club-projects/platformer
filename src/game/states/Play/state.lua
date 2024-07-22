@@ -38,9 +38,10 @@ function PlayState:init(game)
     end)
 end
 
-function PlayState:enter()
-    self.data = {
+function PlayState:enter(prevState, data)
+    self.data = data or {
         score = 0,
+        time = 0,
     }
 
     self.camera = Camera(self.game)
@@ -48,6 +49,7 @@ function PlayState:enter()
 
     self.map = Map(self.game)
     self.map.width = self.width / 3 * 2
+    self.map.startNumber = self.data.score
     self.map:generate(3)
 
     for _, pad in ipairs(self.map.pads) do
@@ -82,7 +84,9 @@ function PlayState:enter()
     self.lava.color = self.game.palette.colors.tiertary
 
     self.staminaCounter = StaminaCounter(self.player.maxStamina)
+
     self.scoreCounter = ScoreCounter()
+    self.scoreCounter:setScore(self.data.score)
 
     love.graphics.setBackgroundColor(self.game.palette.colors.primary:unpack())
 
@@ -119,7 +123,7 @@ function PlayState:enter()
         self.player.signals.noStamina:connect(self.staminaCounter.shake, self.staminaCounter),
 
         self.player.touched:connect(function(entity)
-            if entity.name ~= "Pad" then
+            if entity.name ~= "Pad" and entity.name ~= "FinishPlatform" then
                 return
             end
 
@@ -130,7 +134,7 @@ function PlayState:enter()
         end),
 
         self.portal.playerTouched:connect(function()
-            self.game:resetState()
+            self.game:setState("PlayState", self.data)
         end),
         self.lava.playerTouched:connect(function()
             love.event.quit()
@@ -190,6 +194,8 @@ function PlayState:update(dt)
     else
         self.fallingSound:setVolume(0)
     end
+
+    self.data.time = self.data.time + dt
 end
 
 function PlayState:draw()
