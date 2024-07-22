@@ -104,10 +104,10 @@ function Player:update(dt, entities)
                 self.isDashing = wantsToDash
 
                 self.canDash = false
-                self.startedDashing = love.timer.getTime()
 
                 if self.isDashing then
                     self.dashDirection = velocityIncrease
+                    self.startedDashing = love.timer.getTime()
 
                     self.stamina = mathf.clamp(self.stamina - self.dashStaminaCost, 0, self.maxStamina)
                     self.signals.dashed:dispatch()
