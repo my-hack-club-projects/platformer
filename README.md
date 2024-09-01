@@ -4,6 +4,8 @@
 
 - note: all sounds are taken from [pixabay.com](https://pixabay.com/). this is not a commercial project.
 
+![image](https://github.com/user-attachments/assets/eb270b37-9091-4b91-8043-9b99c8ee2b87)
+
 ## installation
 
 installation is very simple, follow these steps:
